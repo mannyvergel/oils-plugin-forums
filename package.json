@@ -1,0 +1,26 @@
+{
+  "name": "oils-plugin-forums",
+  "version": "2.4.0",
+  "description": "Forum plugin for Oils JS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mannyvergel/oils-plugin-forums.git"
+  },
+  "keywords": [
+    "Forums",
+    "Oils",
+    "Plugin",
+    "Message",
+    "Board"
+  ],
+  "author": "Manny Vergel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mannyvergel/oils-plugin-forums/issues"
+  },
+  "homepage": "https://github.com/mannyvergel/oils-plugin-forums#readme"
+}
