@@ -4,8 +4,8 @@ var Schema = mongoose.Schema,
 
 module.exports = {
   schema: {
-    timezone: {type: String, required: true},
-    forumId: {type: String, required: true}, //one time identifier
+    tz: {type: String, required: true},
+    forumId: {type: String, required: true, unique: true}, //one time identifier
 
     updateDt: {type: Date, default: Date.now},
     updateBy: {type: String, default: 'SYSTEM'},

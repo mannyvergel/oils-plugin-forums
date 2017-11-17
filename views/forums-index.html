@@ -7,23 +7,13 @@
 
 {% block content %}
 
-
+<h1>Welcome to your forum!</h1>
 
 <div class="row">
   
-  <div class="medium-4 medium-centered columns">
-  <h1>Login</h1>
-    <form action="/login" method="post"> 
-      <input type="hidden" name="r" value="{{r}}"/>
-      <input type="text" name="username" placeholder="Email / Username" value="{{username}}"/> 
-      <input type="password" name="password" placeholder="Password"/> 
-      <button type="submit" class="small button">Log In</button>
-    </form>
-
-    <p>No account yet? <a href="/register">Register here</a>.
+  <div class="large-12 large-centered columns">
+    You have 0 categories
   </div>
-  
-  
 </div>
 
 {% endblock %}

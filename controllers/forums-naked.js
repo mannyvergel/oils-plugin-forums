@@ -15,7 +15,7 @@ module.exports = {
         res.redirect('/forums/' + forums[0].forumId);
       } else {
         //TODO: make configurable
-        throw new Error("Cannot redirect as there are too many forums");
+        throw new Error("Cannot redirect with " + forums.length + " forums.");
       }
     })
   }

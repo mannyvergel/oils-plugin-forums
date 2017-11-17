@@ -3,7 +3,7 @@ var controllersDir = pluginConf.controllersDir;
 var path = require('path');
 
 module.exports = {
-  '/forums': require(path.join(controllersDir, 'forums-naked.js')),
-  '/forums/:forumId': require(path.join(controllersDir, 'forums-index.js')),
-  '/forums/:forumId/post/:postId': require(path.join(controllersDir, 'forums-post.js')),
+  '/forums': web.include(path.join(controllersDir, 'forums-naked.js')),
+  '/forums/:forumId': web.include(path.join(controllersDir, 'forums-index.js')),
+  '/forums/:forumId/post/:postId': web.include(path.join(controllersDir, 'forums-post.js')),
 }

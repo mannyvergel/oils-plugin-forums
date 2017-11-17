@@ -4,7 +4,7 @@ var Schema = mongoose.Schema,
 
 module.exports = {
   schema: {
-    content: {type: String, required: true}
+    content: {type: String, required: true},
     userProfile: {type: ObjectId, ref: 'User', required: true},
     topic: {type: ObjectId, ref: 'ForumsTopic', required: true},
 
