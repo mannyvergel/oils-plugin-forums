@@ -1,7 +1,7 @@
-
+var path = require('path');
 
 module.exports = {
   mainTemplate: 'templates/main.html',
-  controllersDir: __dirname + '../controllers/',
-  viewsDir: __dirname + '../views/' 
+  controllersDir: path.join(__dirname,  '../controllers/'),
+  viewsDir: path.join(__dirname, '../views/') 
 }
