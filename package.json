@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/mannyvergel/oils-plugin-forums/issues"
   },
-  "homepage": "https://github.com/mannyvergel/oils-plugin-forums#readme"
+  "homepage": "https://github.com/mannyvergel/oils-plugin-forums#readme",
+  "dependencies": {
+    "synchronize": "^2.0.0"
+  }
 }
