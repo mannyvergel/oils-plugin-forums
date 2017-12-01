@@ -12,7 +12,9 @@
 <div class="row">
   
   <div class="large-12 large-centered columns">
-    You have 0 categories
+  	{%if not categories or categories.length == 0%}
+    You have 0 categories. <a class="btn btn-primary button" href="/admin/forums/categories">Add</a>
+    {%endif%}
   </div>
 </div>
 

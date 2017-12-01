@@ -1,32 +1,19 @@
-var dbeditUtils = require('../utils/dbeditUtils.js');
+
 module.exports = {
 	get: function(req, res) {
 		var modelStr = 'ForumsCategory';
 		//should be in cache by this time (assumption)
-		var model = dbeditUtils.searchModel(modelStr);
+		//var model = dbeditUtils.searchModel(modelStr);
+		var model = web.models(modelStr);
 		var modelAttr = model.getModelDictionary();
 		var modelSchema = modelAttr.schema;
 		var modelName = modelAttr.name;
 		var modelConf = {cols: ['forum', 'name', 'desc'], labels:['Forum', 'Name', 'Descrip']};
 
-		var cols = modelConf.cols;
+		var cols = ['name', 'desc'];
+		var labels = ['Name', 'Descrip'];
 		var labels = modelConf.labels;
-		if (!cols) {
-			cols = ['_id'];
-			labels = ['Actions'];
-			var maxColsDisplay = 4;
-			var counter = 0;
-			for (var i in modelSchema) {
-
-				cols.push(i);
-				labels.push(dbeditUtils.camelToTitle(i));
-
-				counter++;
-				if (counter > maxColsDisplay) {
-					break;
-				}
-			}
-		}
+		
 		var handlers = modelConf.handlers;
 		if (!handlers) {
 			handlers = {

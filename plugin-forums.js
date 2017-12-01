@@ -41,19 +41,21 @@ module.exports = function(pluginConf, web, done) {
 
     loadModels(pluginConf);
 
-    if (pluginConf.addToMenu) {
-      web.cms.adminMenu.push({
-        headerText:'Forums',
-        permissions: ['ADMIN'],
-        items:[
-          { text: 'Categories', link:'/admin/forums/categories'},
-        ]
-      })
-    }
+    web.cms.adminMenu.push({
+      headerText:'Forums',
+      permissions: ['ADMIN'],
+      items:[
+        { text: 'Categories', link:'/admin/forums/categories'},
+      ]
+    })
 
-    var routes = require('./conf/routes.js');
+    web.app.use(defaultForumMiddleware)
+    web.addRoutes(require('./conf/routes.js'));
 
-    web.applyRoutes(routes);
+    web.on('beforeRender', function(view, options, callback, req, res) {
+      options = options || {};
+      options.defaultForum = req.defaultForum;
+    });
 
     loadDummyData();
 
@@ -63,3 +65,41 @@ module.exports = function(pluginConf, web, done) {
 
   
 }
+
+var defaultForumCache = null;
+
+function defaultForumMiddleware(req, res, next) {
+      sync.fiber(function(){
+        //if (req.url.indexOf('/admin/forums') == 0 && req.url.indexOf('/forums') == 0) {
+        if (!defaultForumCache) {
+          var Forum = web.models('ForumsForum');
+
+          var forumParams = {};
+          var forumId = req.query.forumId;
+          if (forumId) {
+            //TODO: permission to get this forum!!
+            forumParams = {forumId: forumId};
+          } else {
+            forumFinder = Forum.find({}).limit(2);
+
+          }
+
+          var forums = sync.await(Forum.find(forumParams).limit(2).lean().exec(sync.defer()));
+
+          if (!forums) {
+            throw new Error("Default forum not found!");
+          } else {
+            //get the one default forum if forum ID is not specified
+            if (forums.length > 1) {
+              throw new Error("There are multiple forums found! Need to specify forumId");
+            } else {
+              defaultForumCache = forums[0];
+            }
+          }
+        }
+
+        req.defaultForum = defaultForumCache;
+
+        next();
+      });
+    }

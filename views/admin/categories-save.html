@@ -1,0 +1,35 @@
+{% extends _cms.conf.adminTemplate %}
+
+{% block content %}
+{{super()}}
+
+<form method="post">
+  <input type="hidden" name="_csrf" value="{{_csrf}}" />
+  <input type="hidden" name="forum" value={{defaultForum._id}} />
+
+  <input type="hidden" name="_id" value="{{rec._id}}" />
+  <input type="hidden" name="modelName" value="{{modelAttr.name}}" />
+  <input type="hidden" name="redirectAfter" value="{{redirectAfter}}" />
+  
+  <div class="form-group">
+      <label>Name</label>
+      <input class="form-control" name="name" value="{{rec.name}}">
+  </div>
+
+
+  
+  <div class="form-group">
+      <label>Desc</label>
+      <input class="form-control" name="desc" value="{{rec.desc}}">
+  </div>
+
+
+  <button type="submit" class="btn btn-default">Save</button>
+
+  
+
+</form>
+
+
+
+{% endblock %}
