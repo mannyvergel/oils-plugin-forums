@@ -6,12 +6,16 @@ var forwarder = require('../controllers/forums-forwarder.js');
 module.exports = {
   '/forums': web.include(path.join(controllersDir, 'forums-index.js')),
   '/forums/post/:postId': web.include(path.join(controllersDir, 'forums-post.js')),
-  //'/admin/forums/categories': web.include(path.join(controllersDir, 'admin/forums-categories.js')),
+  '/forums/category': web.include(path.join(controllersDir, 'forums-category.js')),
+  
+  '/admin/forums': forwarder('/admin/dbedit/list?model=ForumsForum'),
+
   '/admin/forums/categories': forwarder('/admin/dbedit/list?model=ForumsCategory&cols=' 
   								+ encodeURIComponent('["name", "desc"]') 
-  								+ '&displayName=Category&saveParams=' 
+  								+ '&sort=' + encodeURIComponent('{"seq": 1}')
+  								+ '&displayName=Category' 
+  								+ '&saveParams=' 
   								+ encodeURIComponent('saveView=' + pluginConf.pluginPath + '/views/admin/categories-save.html' 
-  									+ '&displayName=Category')),
-//'/admin/forums/categories': forwarder('/admin/dbedit/list'),
+  										+ '&displayName=Category')),
 
 }

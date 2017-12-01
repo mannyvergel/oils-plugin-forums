@@ -1,0 +1,22 @@
+{% extends pluginConf.mainTemplate %}
+
+{% block title %}Forum{% endblock %}
+
+{% block head %}
+
+ <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+{# TODO!!! Transfer to css  #}
+<style>
+
+</style>
+{% endblock %}
+{% block content %}
+
+<h1>{{category.name}}</h1>
+
+{{table | safe}}
+
+{% endblock %}
+
+

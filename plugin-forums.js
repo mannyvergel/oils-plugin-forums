@@ -45,6 +45,7 @@ module.exports = function(pluginConf, web, done) {
       headerText:'Forums',
       permissions: ['ADMIN'],
       items:[
+        { text: 'Forum', link:'/admin/forums'},
         { text: 'Categories', link:'/admin/forums/categories'},
       ]
     })

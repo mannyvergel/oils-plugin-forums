@@ -6,6 +6,9 @@ module.exports = {
   schema: {
     name: {type: String, required: true},
     desc: {type: String, required: true},
+    seq: {type: Number},
+    color: {type: String},
+    icon: {type: String},
     forum: {type: ObjectId, ref: 'ForumsForum', required: true},
 
     updateDt: {type: Date, default: Date.now},

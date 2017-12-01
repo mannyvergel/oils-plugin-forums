@@ -3,6 +3,10 @@
 {% block content %}
 {{super()}}
 
+
+<a href="{{redirectAfter}}"  class="btn btn-default">Back</a>
+<br/><br/>
+
 <form method="post">
   <input type="hidden" name="_csrf" value="{{_csrf}}" />
   <input type="hidden" name="forum" value={{defaultForum._id}} />
@@ -23,8 +27,23 @@
       <input class="form-control" name="desc" value="{{rec.desc}}">
   </div>
 
+  <div class="form-group">
+      <label>Seq</label>
+      <input class="form-control" name="seq" value="{{rec.seq}}">
+  </div>
 
-  <button type="submit" class="btn btn-default">Save</button>
+  <div class="form-group">
+      <label>Color</label>
+      <input class="form-control" name="color" value="{{rec.color}}">
+  </div>
+
+  <div class="form-group">
+      <label>Icon</label>
+      <input class="form-control" name="icon" value="{{rec.icon}}">
+  </div>
+
+
+  <button type="submit" class="btn btn-primary">Save</button>
 
   
 
