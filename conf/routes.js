@@ -5,7 +5,7 @@ var forwarder = require('../controllers/forums-forwarder.js');
 
 module.exports = {
   '/forums': web.include(path.join(controllersDir, 'forums-index.js')),
-  '/forums/post/:postId': web.include(path.join(controllersDir, 'forums-post.js')),
+  '/forums/post': web.include(path.join(controllersDir, 'forums-post.js')),
   '/forums/category': web.include(path.join(controllersDir, 'forums-category.js')),
   
   '/admin/forums': forwarder('/admin/dbedit/list?model=ForumsForum'),

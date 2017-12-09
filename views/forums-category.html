@@ -1,6 +1,6 @@
 {% extends pluginConf.mainTemplate %}
 
-{% block title %}Forum{% endblock %}
+{% block title %}Category{% endblock %}
 
 {% block head %}
 
@@ -14,6 +14,8 @@
 {% block content %}
 
 <h1>{{category.name}}</h1>
+
+<a href="/forums/topic/save" class="button btn btn-primary">New Topic</a>
 
 {{table | safe}}
 
