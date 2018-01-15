@@ -1,14 +1,62 @@
 {% extends pluginConf.mainTemplate %}
 
-{% block title %}Post{% endblock %}
+{% block title %}Post a Message / Ask a Question{% endblock %}
 
 {% block head %}
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/simplemde@1.11.2/dist/simplemde.min.css">
+<script src="//cdn.jsdelivr.net/npm/simplemde@1.11.2/dist/simplemde.min.js"></script>
+
 {% endblock %}
 
 {% block content %}
 
+<form method="POST" name="frmPeso">
+<input type="hidden" name="_csrf" value="{{_csrf}}" />
 
+<div class="row">
+  
+  <div class="large-12 columns">
+
+    <div class="form-group">
+        <label>Title
+        <input class="form-control" name="title" value="{{rec.title}}">
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label>Message
+        <textarea id="TXT_MSG" name="msg"></textarea>
+        </label>
+
+    </div>
+
+
+    <div class="form-group">
+        <label>Tags
+        <input class="form-control" name="title" value="{{rec.title}}">
+        </label>
+    </div>
+
+  </div>
+</div>
+
+<div class="row">
+  
+  <div class="large-12 columns">
+    <button class="btn btn-primary button" type="submit">Post</button>
+  </div>
+</div>
+
+</form>
 
 {% endblock %}
+
+
+{%block bodyend%}
+<script>
+  var simplemde = new SimpleMDE({ element: document.getElementById("TXT_MSG") });
+</script>
+
+{%endblock%}
 
 

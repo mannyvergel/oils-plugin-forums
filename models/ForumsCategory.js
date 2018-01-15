@@ -10,6 +10,7 @@ module.exports = {
     color: {type: String},
     icon: {type: String},
     forum: {type: ObjectId, ref: 'ForumsForum', required: true},
+    parentCat:{type: ObjectId, ref: 'ForumsCategory'},
 
     updateDt: {type: Date, default: Date.now},
     updateBy: {type: String, default: 'SYSTEM'},

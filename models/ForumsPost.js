@@ -5,7 +5,7 @@ var Schema = mongoose.Schema,
 module.exports = {
   schema: {
     msg: {type: String, required: true},
-    userProfile: {type: ObjectId, ref: 'User', required: true},
+    userProfile: {type: ObjectId, ref: 'ForumsUserProfile', required: true},
     topic: {type: ObjectId, ref: 'ForumsTopic', required: true},
 
     updateDt: {type: Date, default: Date.now},

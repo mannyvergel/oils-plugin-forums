@@ -1,6 +1,6 @@
 {% extends pluginConf.mainTemplate %}
 
-{% block title %}Forum{% endblock %}
+{% block title %}Forums{% endblock %}
 
 {% block head %}
 
@@ -37,9 +37,15 @@
 
 <h1>Welcome to {{defaultForum.name}} forum!</h1>
 
+<div class="row">  
+  <div class="large-12 columns">
+  <a class="btn btn-primary button" href="/forums/post">Ask a Question / Post a Message</a>
+  </div>
+</div>
+
 <div class="row">
   
-  <div class="large-12 large-centered columns">
+  <div class="large-12 columns">
   	{%if not categories or categories.length == 0%}
     You have 0 categories. <a class="btn btn-primary button" href="/admin/forums/categories">Add</a>
     {%else%}

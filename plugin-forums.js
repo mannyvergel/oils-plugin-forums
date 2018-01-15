@@ -1,6 +1,5 @@
 var fs = require('fs');
 var path = require('path');
-
 var sync = require('synchronize');
 
 
@@ -37,6 +36,8 @@ module.exports = function(pluginConf, web, done) {
   sync.fiber(function(){
   
     pluginConf = Object.assign(require('./conf/conf.js'), pluginConf);
+    pluginConf.userProfileNeedsUpdating = true;
+
     web.plugins['oils-plugin-forums'].conf = pluginConf;
 
     loadModels(pluginConf);
@@ -50,7 +51,8 @@ module.exports = function(pluginConf, web, done) {
       ]
     })
 
-    web.app.use(defaultForumMiddleware)
+    web.app.use(defaultForumMiddleware);
+    web.app.use(forumUserProfileMiddleware)
     web.addRoutes(require('./conf/routes.js'));
 
     web.on('beforeRender', function(view, options, callback, req, res) {
@@ -68,6 +70,27 @@ module.exports = function(pluginConf, web, done) {
 }
 
 var defaultForumCache = null;
+
+function forumUserProfileMiddleware(req, res, next) {
+  sync.fiber(function(){
+    if (web.plugins['oils-plugin-forums'].conf.userProfileNeedsUpdating) {
+      var ForumsUserProfile = web.models('ForumsUserProfile');
+      var forumsUserProfile = sync.await(ForumsUserProfile.find({user:req.user._id}).lean().exec(sync.defer()));
+
+      if (!forumsUserProfile) {
+        console.log("Creating forums user profile for the first time:", req.user.username);
+        forumsUserProfile = new ForumsUserProfile();
+        sync.await(forumsUserProfile.save(sync.defer()));
+      }
+
+      req.forumsUserProfile = forumsUserProfile;
+      web.plugins['oils-plugin-forums'].conf.userProfileNeedsUpdating = false;
+    }
+    
+
+    next();
+  });
+}
 
 function defaultForumMiddleware(req, res, next) {
       sync.fiber(function(){

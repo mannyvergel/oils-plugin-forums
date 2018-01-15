@@ -13,6 +13,8 @@
 
   <input type="hidden" name="_id" value="{{rec._id}}" />
   <input type="hidden" name="redirectAfter" value="{{redirectAfter}}" />
+  <input type="hidden" name="modelName" value="ForumsCategory" />
+  <input type="hidden" name="forum" value="{{defaultForum._id}}" />
   
   <div class="form-group">
       <label>Subject</label>
@@ -22,9 +24,13 @@
 
   
   <div class="form-group">
-      <label>Message</label>
-      <textarea class="form-control" name="">{{rec.content}}</textarea>
-      <input class="form-control" name="desc" value="{{rec.desc}}">
+      <label>Description</label>
+      <textarea class="form-control" name="desc">{{rec.desc}}</textarea>
+  </div>
+
+  <div class="form-group">
+      <label>Icon</label>
+      <input class="form-control" name="icon" value="{{rec.icon}}">
   </div>
 
 

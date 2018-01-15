@@ -4,8 +4,9 @@ var Schema = mongoose.Schema,
 
 module.exports = {
   schema: {
-    subj: {type: String, required: true},
-    category: {type: ObjectId, ref: 'ForumsCategory', required: true},
+    title: {type: String, required: true},
+    category: {type: ObjectId, ref: 'ForumsCategory'},
+    tags: [{type: String}],
 
     updateDt: {type: Date, default: Date.now},
     updateBy: {type: String, default: 'SYSTEM'},

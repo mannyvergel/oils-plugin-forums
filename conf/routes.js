@@ -8,6 +8,10 @@ module.exports = {
   '/forums/post': web.include(path.join(controllersDir, 'forums-post.js')),
   '/forums/category': web.include(path.join(controllersDir, 'forums-category.js')),
   
+  //transferred to cdn
+  //'/forums/public/simplemde/simplemde.min.css': function(req, res) {res.sendFile(path.join(web.conf.baseDir, pluginConf.pluginPath, 'public/simplemde/simplemde.min.css'))},
+  //'/forums/public/simplemde/simplemde.min.js': function(req, res) {res.sendFile(path.join(web.conf.baseDir, pluginConf.pluginPath, 'public/simplemde/simplemde.min.js'))},
+  
   '/admin/forums': forwarder('/admin/dbedit/list?model=ForumsForum'),
 
   '/admin/forums/categories': forwarder('/admin/dbedit/list?model=ForumsCategory&cols=' 
