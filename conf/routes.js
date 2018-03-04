@@ -6,6 +6,8 @@ var forwarder = require('../controllers/forums-forwarder.js');
 module.exports = {
   '/forums': web.include(path.join(controllersDir, 'forums-index.js')),
   '/forums/post': web.include(path.join(controllersDir, 'forums-post.js')),
+  '/forums/topic': web.include(path.join(controllersDir, 'forums-topic.js')),
+  '/forums/reply': web.include(path.join(controllersDir, 'forums-reply.js')),
   '/forums/category': web.include(path.join(controllersDir, 'forums-category.js')),
   
   //transferred to cdn

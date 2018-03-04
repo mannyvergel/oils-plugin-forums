@@ -2,37 +2,78 @@ var pluginConf = web.plugins['oils-plugin-forums'].conf;
 var Post = web.models('ForumsPost');
 var sync = require('synchronize');
 var path = require('path');
-var ForumsPost = web.models('ForumsPost');
-var ForumsTopic = web.models('ForumsTopic');
+var Topic = web.models('ForumsTopic');
+var Category = web.models('ForumsCategory');
 
 module.exports = {
-  get: function(req, res) {
+  get: [web.auth.loginUtils.handleLogin, function(req, res) {
   	sync.fiber(function() {
   		var queryPostId = req.query._id;
 
   		var post = {};
   		if (queryPostId) {
-  			post = sync.await(Post.findOne({_id: queryPostId}).exec(sync.defer()));
+  			post = sync.await(Post.findOne({_id: queryPostId}).populate('topic').exec(sync.defer()));
   		}
 
-  		res.renderFile(path.join(pluginConf.viewsDir, 'forums-post.html'), {post: post, pluginConf: pluginConf});
+      var categories = sync.await(Category.find({}).sort({name: 1}).lean().exec(sync.defer()));
+
+
+
+      var category = (post.topic ? post.topic.category : null) || req.query.category;
+      if (!category) {
+        for (var i=0; i<categories.length; i++) {
+          if (categories[i].name == 'Uncategorized') {
+            console.debug('Uncategorized selected.');
+            category = categories[i]._id.toString();
+            break;
+          }
+        }
+      }
+
+
+      //console.log('!!!!', post, category);
+
+  		res.renderFile(path.join(pluginConf.viewsDir, 'forums-post.html'), 
+        { post: post, 
+          category: category,
+          categories: categories,
+          pluginConf: pluginConf });
   	});
     
-  },
+  }],
 
-  post: function(req, res) {
+  post: [web.auth.loginUtils.handleLogin, function(req, res) {
     sync.fiber(function() {
-      var topic = new ForumsTopic();
+      var topic = new Topic();
       topic.title = req.body.title;
       topic.category = req.body.category;
-      topic.tags = req.body.tags;
+
+      var tags = [];
+      var arrUncleanTags = req.body.tags.split(',');
+      for (var i in arrUncleanTags) {
+        var cleanTag = arrUncleanTags[i].trim().toLowerCase();
+        if (!web.stringUtils.isEmpty(cleanTag)) {
+          tags.push(cleanTag);
+        }
+        
+      }
+      topic.tags = tags;
+
+      topic.createBy = req.user._id;
+      topic.updateBy = req.user._id;
+      topic.updateDt = new Date();
 
       sync.await(topic.save(sync.defer()));
 
-      var post = new ForumsPost();
+      var post = new Post();
       post.topic = topic._id;
       post.msg = req.body.msg;
       post.userProfile = req.forumsUserProfile._id;
+
+
+      post.createBy = req.user._id;
+      post.updateBy = req.user._id;
+      post.updateDt = new Date();
 
       sync.await(post.save(sync.defer()));
 
@@ -40,5 +81,5 @@ module.exports = {
       res.redirect('/forums/topic?_id=' + topic._id);
 
     });
-  }
+  }]
 }

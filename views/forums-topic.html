@@ -7,7 +7,13 @@
 
 {% block content %}
 
+<h1>{{topic.title}}</h1>
 
+<a href="/forums/reply?topic={{topic._id.toString()}}" class="button btn btn-primary">Reply</a>
+
+{{table | safe}}
+
+<a href="/forums/reply?topic={{topic._id.toString()}}" class="button btn btn-primary">Reply</a>
 
 {% endblock %}
 

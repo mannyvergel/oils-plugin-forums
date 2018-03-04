@@ -73,18 +73,41 @@ var defaultForumCache = null;
 
 function forumUserProfileMiddleware(req, res, next) {
   sync.fiber(function(){
-    if (web.plugins['oils-plugin-forums'].conf.userProfileNeedsUpdating) {
+    if (!web.stringUtils.startsWith(req.url, '/forums')) {
+      //console.log('!!!!!!Skipping', req.forumsUserProfile);
+
+      next();
+      return;
+    }
+    //remove req user forums profile if user is logged out
+    if (!req.user && req.forumsUserProfile) {
+      req.forumsUserProfile = null;
+    }
+
+    //remove req user profile from cache if different user
+    if (req.user && req.forumsUserProfile && !req.user._id.isEqual(forumsUserProfile.user)) {
+      req.forumsUserProfile = null;
+    }
+
+    //if forums profile doesn't exist and logged in
+    if (!req.forumsUserProfile && req.user) {
       var ForumsUserProfile = web.models('ForumsUserProfile');
-      var forumsUserProfile = sync.await(ForumsUserProfile.find({user:req.user._id}).lean().exec(sync.defer()));
+      var forumsUserProfile = sync.await(ForumsUserProfile.findOne({user:req.user._id}).lean().exec(sync.defer()));
 
       if (!forumsUserProfile) {
         console.log("Creating forums user profile for the first time:", req.user.username);
         forumsUserProfile = new ForumsUserProfile();
+        forumsUserProfile.user = req.user._id;
         sync.await(forumsUserProfile.save(sync.defer()));
+
+        forumsUserProfile = forumsUserProfile.toObject();
       }
 
       req.forumsUserProfile = forumsUserProfile;
-      web.plugins['oils-plugin-forums'].conf.userProfileNeedsUpdating = false;
+
+      //console.log('!!!!!!', req.forumsUserProfile);
+    
+      //web.plugins['oils-plugin-forums'].conf.userProfileNeedsUpdating = false;
     }
     
 

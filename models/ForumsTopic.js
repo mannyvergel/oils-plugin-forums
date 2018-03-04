@@ -5,7 +5,7 @@ var Schema = mongoose.Schema,
 module.exports = {
   schema: {
     title: {type: String, required: true},
-    category: {type: ObjectId, ref: 'ForumsCategory'},
+    category: {type: ObjectId, ref: 'ForumsCategory', required: true},
     tags: [{type: String}],
 
     updateDt: {type: Date, default: Date.now},

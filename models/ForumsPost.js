@@ -5,6 +5,7 @@ var Schema = mongoose.Schema,
 module.exports = {
   schema: {
     msg: {type: String, required: true},
+    flags: [{type: String}], //e.g. for flagging as inappropriate
     userProfile: {type: ObjectId, ref: 'ForumsUserProfile', required: true},
     topic: {type: ObjectId, ref: 'ForumsTopic', required: true},
 
