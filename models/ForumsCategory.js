@@ -11,10 +11,19 @@ module.exports = {
     icon: {type: String},
     forum: {type: ObjectId, ref: 'ForumsForum', required: true},
     parentCat:{type: ObjectId, ref: 'ForumsCategory'},
+    viewCount: {type: Number, default: 1},
 
     updateDt: {type: Date, default: Date.now},
     updateBy: {type: String, default: 'SYSTEM'},
     createDt: {type: Date, default: Date.now},
     createBy: {type: String, default: 'SYSTEM'}
-  }
+  },
+  initSchema: function(schema) {
+        schema.statics.incrementViewCount = function (id, callback) {
+            var setOnInsert = null;
+            
+          return this.findOneAndUpdate({_id: id}, { $inc: { viewCount: 1 }, $setOnInsert: setOnInsert}, 
+            {new: true, upsert: true, select: {viewCount: 1}}, callback);
+        };
+     }
 }

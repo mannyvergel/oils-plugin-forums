@@ -57,10 +57,14 @@
     			<i class="fa {{category.icon}} fa-2x"></i>
     			{%endif%}
     		</div>
-    		<div class="large-10 columns forums-cat-text-container">
+    		<div class="large-9 columns forums-cat-text-container">
     			<div><a href="/forums/category?_id={{category._id}}" class="forums-cat-text">{{category.name}}</a></div>
     			<p class="forums-cat-desc-text">{{category.desc}}</p>
     		</div>
+
+        <div class="large-1 columns forums-cat-text-container">
+          <p>{{category.viewCount}}</p>
+        </div>
     	  
     	</div>
     {%endfor%}
