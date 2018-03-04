@@ -39,6 +39,8 @@ module.exports = function(pluginConf, web, done) {
     pluginConf.userProfileNeedsUpdating = true;
 
     web.plugins['oils-plugin-forums'].conf = pluginConf;
+    web.plugins['oils-plugin-forums'].constants = require('./conf/constants.js');
+    web.plugins['oils-plugin-forums'].utils = require('./lib/utils.js');
 
     loadModels(pluginConf);
 

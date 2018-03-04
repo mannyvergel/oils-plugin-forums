@@ -3,6 +3,8 @@ var Topic = web.models('ForumsTopic');
 var Post = web.models('ForumsPost');
 var sync = require('synchronize');
 var path = require('path');
+var forumUtils = web.plugins['oils-plugin-forums'].utils
+var forumConstants = web.plugins['oils-plugin-forums'].constants;
 
 module.exports = {
   get: function(req, res) {
@@ -11,7 +13,7 @@ module.exports = {
 
   		var topic = null;
   		if (queryTopicId) {
-  			topic = sync.await(Topic.findOne({_id: queryTopicId}).exec(sync.defer()));
+  			topic = sync.await(Topic.findOne({_id: queryTopicId}).populate('category').lean().exec(sync.defer()));
   		}
 
       if (!topic) {
@@ -28,11 +30,11 @@ module.exports = {
       }, sync.defer()))
 
   		res.renderFile(path.join(pluginConf.viewsDir, 'forums-topic.html'), {table: table, topic: topic, pluginConf: pluginConf});
-  	});
-    
-  },
 
-  post: function(req, res) {
+      forumUtils.incrementViewCountForTopic(topic);
+
+      
+  	});
     
   }
 }

@@ -7,7 +7,8 @@ module.exports = {
   get: function(req, res) {
   	sync.fiber(function() {
   		var categories = sync.await(Category.find({}).lean().sort({seq: 1}).exec(sync.defer()));
-  		res.renderFile(path.join(pluginConf.viewsDir, 'forums-index.html'), {categories: categories, pluginConf: pluginConf}); 
+  		res.renderFile(path.join(pluginConf.viewsDir, 'forums-index.html'), 
+  			{categories: categories, pluginConf: pluginConf}); 
   	});
   }
 }
