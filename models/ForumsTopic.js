@@ -17,6 +17,7 @@ module.exports = {
   initSchema: function(schema) {
         schema.statics.incrementViewCount = function (id, callback) {
             var setOnInsert = null;
+            callback = callback || function(){};
             
           return this.findOneAndUpdate({_id: id}, { $inc: { viewCount: 1 }, $setOnInsert: setOnInsert}, 
             {new: true, upsert: true, select: {viewCount: 1}}, callback);
