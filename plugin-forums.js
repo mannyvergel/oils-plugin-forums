@@ -87,7 +87,7 @@ function forumUserProfileMiddleware(req, res, next) {
     }
 
     //remove req user profile from cache if different user
-    if (req.user && req.forumsUserProfile && !req.user._id.isEqual(forumsUserProfile.user)) {
+    if (req.user && req.forumsUserProfile && !req.user._id.equals(forumsUserProfile.user)) {
       req.forumsUserProfile = null;
     }
 

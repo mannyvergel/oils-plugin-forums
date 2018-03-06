@@ -3,6 +3,7 @@ module.exports = {
 	viewType: {
 		topic: 'TOPIC',
 		category: 'CAT'
-	}
+	},
+	activeUsersCount: 10,
 
 }

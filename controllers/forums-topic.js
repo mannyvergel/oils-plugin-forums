@@ -31,7 +31,7 @@ module.exports = {
 
   		res.renderFile(path.join(pluginConf.viewsDir, 'forums-topic.html'), {table: table, topic: topic, pluginConf: pluginConf});
 
-      forumUtils.incrementViewCountForTopic(topic);
+      forumUtils.incrementViewCountForTopic(req, topic);
 
       
   	});

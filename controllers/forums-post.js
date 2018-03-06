@@ -44,6 +44,9 @@ module.exports = {
 
   post: [web.auth.loginUtils.handleLogin, function(req, res) {
     sync.fiber(function() {
+
+      //TODO: checker for double posts
+
       var topic = new Topic();
       topic.title = req.body.title;
       topic.category = req.body.category;
@@ -76,6 +79,9 @@ module.exports = {
       post.updateDt = new Date();
 
       sync.await(post.save(sync.defer()));
+
+      Category.addActiveUser(topic.category, req.user);
+      Topic.addActiveUser(topic._id, req.user);
 
       req.flash('info', 'Message posted');
       res.redirect('/forums/topic?_id=' + topic._id);
