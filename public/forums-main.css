@@ -1,0 +1,75 @@
+/*TODO: minify*/
+
+.forums-cat {
+  padding: 20px;
+}
+
+.forums-cat-icon {
+  color: white;
+  text-align: center;
+  
+}
+
+.forums-cat-icon.news {
+  font-size: 12px;
+}
+
+.forums-cat-text {
+  font-weight: bold;
+  color: #006FFF;
+  font-size: 17px;
+}
+
+.forums-cat-desc-text {
+  margin-top: 3px;
+  margin-bottom: 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.forums-cat .columns {
+  margin-bottom: 0;
+}
+
+.forums {
+  width: 100%;
+  border: 0;
+}
+
+.forums tr {
+  border: 0;
+  border-bottom: 6px solid white;
+}
+
+.forums tr td {
+  padding: 20px 12px;
+}
+
+.forums tr td.first {
+  padding-left: 16px;
+}
+
+.forums tr th {
+  padding: 0;
+  text-align: center;
+  font-weight: normal;
+  color: #ccc;
+}
+
+.forums a {
+  color: #5060ff;
+}
+
+.forums .viewcount {
+  vertical-align: middle;
+}
+
+.forums .viewcount-container {
+  text-align: center;
+}
+
+.forums .users-container {
+  text-align: center;
+}
+

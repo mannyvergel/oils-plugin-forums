@@ -5,7 +5,7 @@ var Schema = mongoose.Schema,
 module.exports = {
   schema: {
     name: {type: String, required: true},
-    desc: {type: String, required: true},
+    desc: {type: String},
     seq: {type: Number},
     color: {type: String},
     icon: {type: String},

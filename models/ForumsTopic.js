@@ -9,6 +9,7 @@ module.exports = {
     tags: [{type: String}],
     viewCount: {type: Number, default: 1},
     activeUsers: [{_id: {type: ObjectId}, username: {type: String}, avatar: {type: String}}],
+    lastPost: {_id:{type:ObjectId}, createBy:String, createDt: Date},
 
     updateDt: {type: Date, default: Date.now},
     updateBy: {type: String, default: 'SYSTEM'},

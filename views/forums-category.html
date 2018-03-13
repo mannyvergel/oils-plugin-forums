@@ -9,6 +9,31 @@
 {# TODO!!! Transfer to css  #}
 <style>
 
+.forums-topic .topic-title {
+	font-size: 18px;
+}
+
+.forums-topic table thead tr td {
+  font-weight: normal;
+  color: #ccc;
+}
+
+.forums-topic table thead {
+  background: transparent;
+}
+
+.forums-topic table {
+  border: 0;
+}
+
+.forums-topic tbody tr td {
+  padding: 18px 10px;
+}
+
+.forums-topic table {
+  width: 100%;
+}
+
 </style>
 {% endblock %}
 {% block content %}
@@ -17,7 +42,9 @@
 
 <a href="/forums/post?category={{category._id.toString()}}" class="button btn btn-primary">New Topic</a>
 
+<div class="forums-topic">
 {{table | safe}}
+</div>
 
 {% endblock %}
 
