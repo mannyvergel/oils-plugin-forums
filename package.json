@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/mannyvergel/oils-plugin-forums#readme",
   "dependencies": {
-    "synchronize": "^2.0.0"
+    "synchronize": "^2.0.0",
+    "marked": "^0.3.17"
   }
 }

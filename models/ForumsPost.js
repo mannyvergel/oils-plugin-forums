@@ -6,7 +6,7 @@ module.exports = {
   schema: {
     msg: {type: String, required: true},
     flags: [{type: String}], //e.g. for flagging as inappropriate
-    userProfile: {type: ObjectId, ref: 'ForumsUserProfile', required: true},
+    user: {type: ObjectId, ref: 'User', required: true},
     topic: {type: ObjectId, ref: 'ForumsTopic', required: true},
 
     updateDt: {type: Date, default: Date.now},

@@ -52,7 +52,15 @@ module.exports = {
       topic.category = req.body.category;
 
       var tags = [];
-      var arrUncleanTags = req.body.tags.split(',');
+      var tagStr = req.body.tags;
+      var arrUncleanTags;
+      
+      if (tagStr.indexOf("#") != -1) {
+        arrUncleanTags = tagStr.split('#');
+      } else {
+        arrUncleanTags = tagStr.split(',');
+      }
+
       for (var i in arrUncleanTags) {
         var cleanTag = arrUncleanTags[i].trim().toLowerCase();
         if (!web.stringUtils.isEmpty(cleanTag)) {
@@ -71,7 +79,7 @@ module.exports = {
       var post = new Post();
       post.topic = topic._id;
       post.msg = req.body.msg;
-      post.userProfile = req.forumsUserProfile._id;
+      post.user = req.user._id;
 
 
       post.createBy = req.user._id;

@@ -4,9 +4,9 @@ var Schema = mongoose.Schema,
 
 module.exports = {
   schema: {
-    avatar: {type: String},
     user: {type: ObjectId, ref: 'User'},
     points: {type: Number, default: 0},
+    rank: {type: String},
 
     updateDt: {type: Date, default: Date.now},
     updateBy: {type: String, default: 'SYSTEM'}

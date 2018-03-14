@@ -5,6 +5,17 @@ var sync = require('synchronize');
 var path = require('path');
 var forumUtils = web.plugins['oils-plugin-forums'].utils
 var forumConstants = web.plugins['oils-plugin-forums'].constants;
+var marked = require('marked');
+marked.setOptions({
+    renderer: new marked.Renderer(),
+    gfm: true,
+    tables: true,
+    breaks: false,
+    pedantic: false,
+    sanitize: false,
+    smartLists: true,
+    smartypants: false
+  });
 
 module.exports = {
   get: function(req, res) {
@@ -25,8 +36,19 @@ module.exports = {
       var table = sync.await(web.renderTable(req, Post, {
         query: {topic: queryTopicId},
         sort: {createDt: 1},
-        columns: ['msg'],
-        labels: ['Message'],
+        columns: ['user', 'msg'],
+        labels: ['User', 'Message'],
+        populate: 'user',
+        handlers: {
+          user: function(record, column, escapedVal, callback) {
+           
+            var userStr = web.templateEngine.filters.escape(record.user.nickname);
+            callback(null, '<p>' + userStr + '</p>');
+          },
+          msg: function(record, column, escapedVal, callback) {
+            callback(null, marked(record.msg));
+          },
+        },
       }, sync.defer()))
 
   		res.renderFile(path.join(pluginConf.viewsDir, 'forums-topic.html'), {table: table, topic: topic, pluginConf: pluginConf});

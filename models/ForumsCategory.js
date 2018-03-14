@@ -11,7 +11,7 @@ module.exports = {
     icon: {type: String},
     forum: {type: ObjectId, ref: 'ForumsForum', required: true},
     parentCat:{type: ObjectId, ref: 'ForumsCategory'},
-    viewCount: {type: Number, default: 1},
+    viewCount: {type: Number, default: 0},
     activeUsers: [{_id: {type: ObjectId}, username: {type: String}, avatar: {type: String}}],
 
     updateDt: {type: Date, default: Date.now},

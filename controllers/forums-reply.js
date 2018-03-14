@@ -57,7 +57,7 @@ module.exports = {
 
       post.topic = topic._id;
       post.msg = req.body.msg;
-      post.userProfile = req.forumsUserProfile._id;
+      post.user = req.user._id;
 
 
       post.updateBy = req.user._id;

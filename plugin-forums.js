@@ -102,6 +102,13 @@ function forumUserProfileMiddleware(req, res, next) {
         forumsUserProfile.user = req.user._id;
         sync.await(forumsUserProfile.save(sync.defer()));
 
+        var User = web.models('User');
+        User.update({_id: req.user._id}, {$set: {'addtlData.forumsUserProfile': forumsUserProfile._id}}, function(err, count) {
+          if (err) {
+            console.error(err);
+          }
+        });
+
         forumsUserProfile = forumsUserProfile.toObject();
       }
 
