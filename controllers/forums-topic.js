@@ -41,8 +41,11 @@ module.exports = {
         populate: 'user',
         handlers: {
           user: function(record, column, escapedVal, callback) {
-           
-            var userStr = web.templateEngine.filters.escape(record.user.nickname);
+            var userStr = "";
+            if (record.user) {
+              userStr = record.user.nickname;
+            }
+            var userStr = web.templateEngine.filters.escape(userStr);
             callback(null, '<p>' + userStr + '</p>');
           },
           msg: function(record, column, escapedVal, callback) {

@@ -4,6 +4,9 @@
 
 {% block head %}
 
+
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <style>
 table tr td {
   vertical-align: top;
@@ -16,6 +19,8 @@ table thead {
 {% endblock %}
 
 {% block content %}
+
+<a href="/forums/category?_id={{topic.category._id}}"><i class="fa fa-arrow-left"></i> Back to {{topic.category.name}}</a>
 
 <h1>{{topic.title}}</h1>
 
