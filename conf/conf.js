@@ -1,5 +1,5 @@
-var path = require('path');
-var pluginConf = web.plugins['oils-plugin-forums'].conf;
+const path = require('path');
+const pluginConf = web.plugins['oils-plugin-forums'].conf;
 
 module.exports = {
   mainTemplate: 'templates/main.html',

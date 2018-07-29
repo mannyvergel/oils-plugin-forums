@@ -1,7 +1,7 @@
-var pluginConf = web.plugins['oils-plugin-forums'].conf;
-var controllersDir = pluginConf.controllersDir;
-var path = require('path');
-var forwarder = require('../controllers/forums-forwarder.js');
+const pluginConf = web.plugins['oils-plugin-forums'].conf;
+const controllersDir = pluginConf.controllersDir;
+const path = require('path');
+const forwarder = require('../controllers/forums-forwarder.js');
 
 module.exports = {
   '/forums': web.include(path.join(controllersDir, 'forums-index.js')),

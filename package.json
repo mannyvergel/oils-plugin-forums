@@ -1,6 +1,6 @@
 {
   "name": "oils-plugin-forums",
-  "version": "2.4.0",
+  "version": "3.0.0",
   "description": "Forum plugin for Oils JS",
   "main": "index.js",
   "scripts": {
@@ -22,9 +22,10 @@
   "bugs": {
     "url": "https://github.com/mannyvergel/oils-plugin-forums/issues"
   },
+  "engines": {
+    "node": ">= 8.0.0"
+  },
   "homepage": "https://github.com/mannyvergel/oils-plugin-forums#readme",
   "dependencies": {
-    "synchronize": "^2.0.0",
-    "marked": "^0.3.17"
   }
 }

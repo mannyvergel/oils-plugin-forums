@@ -1,59 +1,50 @@
-var pluginConf = web.plugins['oils-plugin-forums'].conf;
-var Post = web.models('ForumsPost');
-var sync = require('synchronize');
-var path = require('path');
-var Topic = web.models('ForumsTopic');
-var Category = web.models('ForumsCategory');
+const pluginConf = web.plugins['oils-plugin-forums'].conf;
+const Post = web.models('ForumsPost');
+
+const path = require('path');
+const Topic = web.models('ForumsTopic');
+const Category = web.models('ForumsCategory');
 
 module.exports = {
-  get: [web.auth.loginUtils.handleLogin, function(req, res) {
-  	sync.fiber(function() {
-  		var queryPostId = req.query._id;
+  get: [web.auth.loginUtils.handleLogin, async function(req, res) {
+  	
+  	let queryPostId = req.query._id;
 
-  		var post = {};
-  		if (queryPostId) {
-  			post = sync.await(Post.findOne({_id: queryPostId}).populate('topic').exec(sync.defer()));
-  		}
+    let post = await Post.findOne({_id: queryPostId}).populate('topic').lean().exec();
 
-      var categories = sync.await(Category.find({}).sort({name: 1}).lean().exec(sync.defer()));
+    let topic = null;
+    if (post) {
+      topic = post.topic;
+    }
 
+    let categoryId = (topic ? topic.category : null) || req.query.category;
 
-
-      var category = (post.topic ? post.topic.category : null) || req.query.category;
-      if (!category) {
-        for (var i=0; i<categories.length; i++) {
-          if (categories[i].name == 'Uncategorized') {
-            console.debug('Uncategorized selected.');
-            category = categories[i]._id.toString();
-            break;
-          }
-        }
-      }
+    let category = await Category.findOne({_id: categoryId}).lean().exec();
+    let categories = await Category.find({}).sort({name: 1}).lean().exec();
 
 
-      //console.log('!!!!', post, category);
+    //console.log('!!!!', post, category);
 
-  		res.renderFile(path.join(pluginConf.viewsDir, 'forums-post.html'), 
-        { post: post, 
-          category: category,
-          categories: categories,
-          pluginConf: pluginConf });
-  	});
-    
+  	res.renderFile(path.join(pluginConf.viewsDir, 'forums-post.html'), 
+      { post: post, 
+        category: category,
+        topic: topic,
+        categories: categories,
+        pluginConf: pluginConf });
+  	
   }],
 
-  post: [web.auth.loginUtils.handleLogin, function(req, res) {
-    sync.fiber(function() {
-
+  post: [web.auth.loginUtils.handleLogin, async function(req, res) {
+   
       //TODO: checker for double posts
 
-      var topic = new Topic();
+      let topic = new Topic();
       topic.title = req.body.title;
       topic.category = req.body.category;
 
-      var tags = [];
-      var tagStr = req.body.tags;
-      var arrUncleanTags;
+      let tags = [];
+      let tagStr = req.body.tags;
+      let arrUncleanTags;
       
       if (tagStr.indexOf("#") != -1) {
         arrUncleanTags = tagStr.split('#');
@@ -61,8 +52,8 @@ module.exports = {
         arrUncleanTags = tagStr.split(',');
       }
 
-      for (var i in arrUncleanTags) {
-        var cleanTag = arrUncleanTags[i].trim().toLowerCase();
+      for (let i in arrUncleanTags) {
+        let cleanTag = arrUncleanTags[i].trim().toLowerCase();
         if (!web.stringUtils.isEmpty(cleanTag)) {
           tags.push(cleanTag);
         }
@@ -74,9 +65,9 @@ module.exports = {
       topic.updateBy = req.user._id;
       topic.updateDt = new Date();
 
-      sync.await(topic.save(sync.defer()));
+      await topic.save();
 
-      var post = new Post();
+      let post = new Post();
       post.topic = topic._id;
       post.msg = req.body.msg;
       post.user = req.user._id;
@@ -86,7 +77,7 @@ module.exports = {
       post.updateBy = req.user._id;
       post.updateDt = new Date();
 
-      sync.await(post.save(sync.defer()));
+      await post.save();
 
       Category.addActiveUser(topic.category, req.user);
       Topic.addActiveUser(topic._id, req.user);
@@ -94,6 +85,5 @@ module.exports = {
       req.flash('info', 'Message posted');
       res.redirect('/forums/topic?_id=' + topic._id);
 
-    });
   }]
 }

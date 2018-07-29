@@ -1,5 +1,5 @@
-var mongoose = web.lib.mongoose;
-var Schema = mongoose.Schema,
+const mongoose = web.require('mongoose');
+const Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 
 module.exports = {
@@ -18,7 +18,7 @@ module.exports = {
   },
   initSchema: function(schema) {
 
-        var commonFuncs = require('../lib/commonFuncs.js');
+        let commonFuncs = require('../lib/commonFuncs.js');
 
         schema.statics.incrementViewCount = commonFuncs.incrementViewCount;
         schema.statics.addActiveUser = commonFuncs.addActiveUser;

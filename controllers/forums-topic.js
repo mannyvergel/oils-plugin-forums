@@ -1,11 +1,12 @@
-var pluginConf = web.plugins['oils-plugin-forums'].conf;
-var Topic = web.models('ForumsTopic');
-var Post = web.models('ForumsPost');
-var sync = require('synchronize');
-var path = require('path');
-var forumUtils = web.plugins['oils-plugin-forums'].utils
-var forumConstants = web.plugins['oils-plugin-forums'].constants;
-var marked = require('marked');
+const pluginConf = web.plugins['oils-plugin-forums'].conf;
+const Topic = web.models('ForumsTopic');
+const Post = web.models('ForumsPost');
+
+const path = require('path');
+const forumUtils = web.plugins['oils-plugin-forums'].utils
+const forumConstants = web.plugins['oils-plugin-forums'].constants;
+const marked = web.require('marked');
+
 marked.setOptions({
     renderer: new marked.Renderer(),
     gfm: true,
@@ -18,48 +19,47 @@ marked.setOptions({
   });
 
 module.exports = {
-  get: function(req, res) {
-  	sync.fiber(function() {
-  		var queryTopicId = req.query._id;
+  get: async function(req, res) {
+ 
+		let queryTopicId = req.query._id;
 
-  		var topic = null;
-  		if (queryTopicId) {
-  			topic = sync.await(Topic.findOne({_id: queryTopicId}).populate('category').lean().exec(sync.defer()));
-  		}
+		let topic = null;
+		if (queryTopicId) {
+			topic = await Topic.findOne({_id: queryTopicId}).populate('category').lean().exec();
+		}
 
-      if (!topic) {
-        //TODO: improve
-        res.status(404).send("Topic not found");
-        return;
-      }
+    if (!topic) {
+      //TODO: improve
+      res.status(404).send("Topic not found");
+      return;
+    }
 
-      var table = sync.await(web.renderTable(req, Post, {
-        query: {topic: queryTopicId},
-        sort: {createDt: 1},
-        columns: ['user', 'msg'],
-        labels: ['User', 'Message'],
-        populate: 'user',
-        handlers: {
-          user: function(record, column, escapedVal, callback) {
-            var userStr = "";
-            if (record.user) {
-              userStr = record.user.nickname;
-            }
-            var userStr = web.templateEngine.filters.escape(userStr);
-            callback(null, '<p>' + userStr + '</p>');
-          },
-          msg: function(record, column, escapedVal, callback) {
-            callback(null, marked(record.msg));
-          },
+    let table = await web.renderTable(req, Post, {
+      query: {topic: queryTopicId},
+      sort: {createDt: 1},
+      columns: ['user', 'msg'],
+      labels: ['User', 'Message'],
+      populate: 'user',
+      handlers: {
+        user: function(record, column, escapedVal, callback) {
+          let userStr = "";
+          if (record.user) {
+            userStr = record.user.nickname;
+          }
+          
+          userStr = web.templateEngine.filters.escape(userStr);
+          callback(null, '<p>' + userStr + '</p>');
         },
-      }, sync.defer()))
+        msg: function(record, column, escapedVal, callback) {
+          callback(null, marked(record.msg));
+        },
+      },
+    });
 
-  		res.renderFile(path.join(pluginConf.viewsDir, 'forums-topic.html'), {table: table, topic: topic, pluginConf: pluginConf});
+		res.renderFile(path.join(pluginConf.viewsDir, 'forums-topic.html'), {table: table, topic: topic, pluginConf: pluginConf});
 
-      forumUtils.incrementViewCountForTopic(req, topic);
+    forumUtils.incrementViewCountForTopic(req, topic);
 
-      
-  	});
-    
+     
   }
 }

@@ -1,4 +1,4 @@
-var Forum = web.models('ForumsForum');
+const Forum = web.models('ForumsForum');
 
 module.exports = {
   get: function(req, res) {

@@ -1,5 +1,5 @@
-var mongoose = web.lib.mongoose;
-var Schema = mongoose.Schema,
+const mongoose = web.require('mongoose');
+const Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 
 module.exports = {
@@ -23,12 +23,12 @@ module.exports = {
     })
 
     mySchema.post('save', function() {
-        var isInsert = this.wasNew;
+        let isInsert = this.wasNew;
         console.debug("[ForumsPost-postSave] isInsert:", isInsert);
 
         if (isInsert) {
-            var Topic = web.models('ForumsTopic');
-            var self = this;
+            let Topic = web.models('ForumsTopic');
+            let self = this;
 
             Topic.findOne({_id: this.topic}, function(err, topic) {
                 if (!topic) {
@@ -43,9 +43,9 @@ module.exports = {
     });
 
     mySchema.post('remove', function() {
-        var Post = web.models('ForumsPost');
+        let Post = web.models('ForumsPost');
 
-        var self = this;
+        let self = this;
         Post.find({topic: self.topic}).sort({createDt: -1}).limit(1).exec(function(err, post) {
             if (post) {
                 Topic.findOne({_id: post.topic}, function(err, topic) {

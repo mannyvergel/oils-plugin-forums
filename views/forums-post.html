@@ -37,6 +37,19 @@ label {
 
 {% block content %}
 
+<div class="row">
+
+  <div class="large-12 columns">
+    {%if topic%}
+    <a class="btn button secondary" href="/forums/topic?_id={{topic._id}}">Cancel</a>
+    {%elif category%}
+    <a class="btn button secondary" href="/forums/category?_id={{category._id}}">Cancel</a>
+    {%else%}
+    <a class="btn button secondary" href="/forums">Cancel</a>
+    {%endif%}
+  </div>
+</div>
+
 <form method="POST" name="frmPeso">
 <input type="hidden" name="_csrf" value="{{_csrf}}" />
 {%if rec._id%}
@@ -44,6 +57,8 @@ label {
 {%else%}
 <h1>New Post</h1>
 {%endif%}
+
+
 <div class="row">
   
   <div class="large-12 columns">
@@ -58,7 +73,7 @@ label {
         <label>Category
         <select name="category">
           {%for cat in categories%}
-            <option value="{{cat._id}}" {%if cat._id.toString()==category%}selected{%endif%}>{{cat.name}}</option>
+            <option value="{{cat._id}}" {%if cat._id and cat._id.equals(category._id)%}selected{%endif%}>{{cat.name}}</option>
           {%endfor%}
         </select>
         </label>
@@ -83,8 +98,12 @@ label {
 
 <div class="row">
   
-  <div class="large-12 columns">
+  <div class="large-6 columns">
     <button class="btn btn-primary button" type="submit">Post</button>
+  </div>
+
+  <div class="large-6 columns" style="text-align: right;">
+    <a class="btn button secondary" href="/forums/topic?_id={{category._id}}">Cancel</a>
   </div>
 </div>
 

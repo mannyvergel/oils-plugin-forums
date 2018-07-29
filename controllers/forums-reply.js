@@ -1,76 +1,75 @@
-var pluginConf = web.plugins['oils-plugin-forums'].conf;
-var Post = web.models('ForumsPost');
-var sync = require('synchronize');
-var path = require('path');
-var Topic = web.models('ForumsTopic');
-var Category = web.models('ForumsCategory');
+const pluginConf = web.plugins['oils-plugin-forums'].conf;
+const Post = web.models('ForumsPost');
+
+const path = require('path');
+const Topic = web.models('ForumsTopic');
+const Category = web.models('ForumsCategory');
 
 module.exports = {
-  get: [web.auth.loginUtils.handleLogin, function(req, res) {
-  	sync.fiber(function() {
-  		var queryPostId = req.query._id;
+  get: [web.auth.loginUtils.handleLogin, async function(req, res) {
+	
+		let queryPostId = req.query._id;
 
-  		var post = {};
-  		if (queryPostId) {
-  			post = sync.await(Post.findOne({_id: queryPostId}).lean().populate('topic').exec(sync.defer()));
-  		}
+		let post = {};
+		if (queryPostId) {
+			post = await Post.findOne({_id: queryPostId}).lean().populate('topic').exec();
+		}
 
-      if (!req.query.topic) {
-        throw new Error("Topic ID not found!");
-      }
-      
-      var topic = sync.await(Topic.findOne({_id: req.query.topic}).lean().exec(sync.defer()));
-      if (!topic) {
-        throw new Error("Topic not found!");
-      }
-      
-      //console.log('!!!!', post, category);
+    if (!req.query.topic) {
+      throw new Error("Topic ID not found!");
+    }
+    
+    let topic = await Topic.findOne({_id: req.query.topic}).lean().exec();
 
-  		res.renderFile(path.join(pluginConf.viewsDir, 'forums-reply.html'), 
-        { post: post, 
-          topic: topic,
-          pluginConf: pluginConf });
-  	});
+    if (!topic) {
+      throw new Error("Topic not found!");
+    }
+    
+    //console.log('!!!!', post, category);
+
+		res.renderFile(path.join(pluginConf.viewsDir, 'forums-reply.html'), 
+      { post: post, 
+        topic: topic,
+        pluginConf: pluginConf });
+  	
     
   }],
 
-  post: [web.auth.loginUtils.handleLogin, function(req, res) {
-    sync.fiber(function() {
+  post: [web.auth.loginUtils.handleLogin, async function(req, res) {
+    
+    //TODO: checker for double posts
 
-      //TODO: checker for double posts
+    let topic = await Topic.findOne({_id: req.body.topicId});
+    if (!topic) {
+      throw new Error("Topic not found.");
+    }
 
-      var topic = sync.await(Topic.findOne({_id: req.body.topicId}, sync.defer()));
-      if (!topic) {
-        throw new Error("Topic not found.");
+    let post;
+    if (req.query._id) {
+      post = await Post.findOne({_id: req.body._id});
+      if (!post) {
+        throw new Error("Post not found.");
       }
+    } else {
+      post = new Post();
+      post.createBy = req.user._id;
+    }
 
-      var post;
-      if (req.query._id) {
-        post = sync.await(Post.findOne({_id: req.body._id}, sync.defer()));
-        if (!post) {
-          throw new Error("Post not found.");
-        }
-      } else {
-        post = new Post();
-        post.createBy = req.user._id;
-      }
-
-      post.topic = topic._id;
-      post.msg = req.body.msg;
-      post.user = req.user._id;
+    post.topic = topic._id;
+    post.msg = req.body.msg;
+    post.user = req.user._id;
 
 
-      post.updateBy = req.user._id;
-      post.updateDt = new Date();
+    post.updateBy = req.user._id;
+    post.updateDt = new Date();
 
-      sync.await(post.save(sync.defer()));
+    await post.save();
 
-      Category.addActiveUser(topic.category, req.user);
-      Topic.addActiveUser(topic._id, req.user);
+    Category.addActiveUser(topic.category, req.user);
+    Topic.addActiveUser(topic._id, req.user);
 
-      req.flash('info', 'Reply posted');
-      res.redirect('/forums/topic?_id=' + topic._id);
+    req.flash('info', 'Reply posted');
+    res.redirect('/forums/topic?_id=' + topic._id);
 
-    });
   }]
 }

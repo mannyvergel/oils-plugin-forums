@@ -1,5 +1,5 @@
-var mongoose = web.lib.mongoose;
-var Schema = mongoose.Schema,
+const mongoose = web.require('mongoose');
+const Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 
 module.exports = {

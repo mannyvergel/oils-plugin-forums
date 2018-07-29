@@ -3,7 +3,7 @@ module.exports = {
 	get: function(req, res) {
 		if (req.defaultForum) {
 			//eg /admin/forums/categories/add -> /admin/forums/default-forum/categories/add
-			var urlRedirect = req.url.substr(0, req.url.indexOf('forums') + 6) 
+			let urlRedirect = req.url.substr(0, req.url.indexOf('forums') + 6) 
 			  + '/' + req.defaultForum.forumId 
 			  + req.url.substr(req.url.indexOf('forums') + 6);
 

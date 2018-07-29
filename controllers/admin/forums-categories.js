@@ -1,20 +1,20 @@
 
 module.exports = {
 	get: function(req, res) {
-		var modelStr = 'ForumsCategory';
+		let modelStr = 'ForumsCategory';
 		//should be in cache by this time (assumption)
-		//var model = dbeditUtils.searchModel(modelStr);
-		var model = web.models(modelStr);
-		var modelAttr = model.getModelDictionary();
-		var modelSchema = modelAttr.schema;
-		var modelName = modelAttr.name;
-		var modelConf = {cols: ['forum', 'name', 'desc'], labels:['Forum', 'Name', 'Descrip']};
+		//let model = dbeditUtils.searchModel(modelStr);
+		let model = web.models(modelStr);
+		let modelAttr = model.getModelDictionary();
+		let modelSchema = modelAttr.schema;
+		let modelName = modelAttr.name;
+		let modelConf = {cols: ['forum', 'name', 'desc'], labels:['Forum', 'Name', 'Descrip']};
 
-		var cols = ['name', 'desc'];
-		var labels = ['Name', 'Descrip'];
-		var labels = modelConf.labels;
+		let cols = ['name', 'desc'];
+		let labels = ['Name', 'Descrip'];
+		let labels = modelConf.labels;
 		
-		var handlers = modelConf.handlers;
+		let handlers = modelConf.handlers;
 		if (!handlers) {
 			handlers = {
 			  	_id: function(record, column, escapedVal, callback) {
@@ -26,7 +26,7 @@ module.exports = {
 		}
 		
 
-		var query = modelConf.query || {}; //else query everything
+		let query = modelConf.query || {}; //else query everything
 		web.renderTable(req, model, {
 			  query: query,
 			  columns: cols,
@@ -34,8 +34,8 @@ module.exports = {
 			  handlers: handlers
 			}, 
 			function(err, table) {
-				var listView = modelConf.view || web.cms.dbedit.conf.listView;
-				var pageTitle = modelConf.pageTitle || (modelName + ' List');
+				let listView = modelConf.view || web.cms.dbedit.conf.listView;
+				let pageTitle = modelConf.pageTitle || (modelName + ' List');
 				res.render(listView, {table: table, pageTitle: pageTitle, modelName: modelName});
 		});
 	}
