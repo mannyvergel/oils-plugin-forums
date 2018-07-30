@@ -20,6 +20,9 @@ module.exports = {
     let categoryId = (topic ? topic.category : null) || req.query.category;
 
     let category = await Category.findOne({_id: categoryId}).lean().exec();
+    if (!category) {
+      category = await Category.findOne({name:'Uncategorized'}).lean().exec();
+    }
     let categories = await Category.find({}).sort({name: 1}).lean().exec();
 
 

@@ -42,17 +42,6 @@ module.exports = {
       populate: 'user',
       addtlTableClass: "forums-topic",
       handlers: {
-        user: function(record, column, escapedVal, callback) {
-          // Not used anymore
-
-          // let userStr = "";
-          // if (record.user) {
-          //   userStr = record.user.nickname;
-          // }
-          
-          // userStr = web.templateEngine.filters.escape(userStr);
-          // callback(null, '<p>' + userStr + '</p>');
-        },
         msg: function(record, column, escapedVal, callback) {
 
           let userStr = "";
