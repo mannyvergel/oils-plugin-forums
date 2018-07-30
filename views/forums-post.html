@@ -38,15 +38,8 @@ label {
 {% block content %}
 
 <div class="row">
-
   <div class="large-12 columns">
-    {%if topic%}
-    <a class="btn button secondary" href="/forums/topic?_id={{topic._id}}">Cancel</a>
-    {%elif category%}
-    <a class="btn button secondary" href="/forums/category?_id={{category._id}}">Cancel</a>
-    {%else%}
-    <a class="btn button secondary" href="/forums">Cancel</a>
-    {%endif%}
+    <a href="{%if topic%}/forums/topic?_id={{topic._id}}{%elif category%}/forums/category?_id={{category._id}}{%else%}/forums{%endif%}" class="back-to">Cancel</a>
   </div>
 </div>
 
@@ -102,9 +95,12 @@ label {
     <button class="btn btn-primary button" type="submit">Post</button>
   </div>
 
+{#
   <div class="large-6 columns" style="text-align: right;">
     <a class="btn button secondary" href="/forums/topic?_id={{category._id}}">Cancel</a>
   </div>
+  #}
+
 </div>
 
 </form>

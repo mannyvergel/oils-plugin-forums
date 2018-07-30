@@ -9,6 +9,12 @@ module.exports = {
     user: {type: ObjectId, ref: 'User', required: true},
     topic: {type: ObjectId, ref: 'ForumsTopic', required: true},
 
+    //not indexed as of writing since it's not needed to be retrieved separately
+    status: {type: String, required: true, default: 'A'}, //[A]ctive, [X]Deleted
+    //TODO: array diff column
+
+    isEdited: {type: String},
+
     updateDt: {type: Date, default: Date.now},
     updateBy: {type: String, default: 'SYSTEM'},
     createDt: {type: Date, default: Date.now},
@@ -16,6 +22,8 @@ module.exports = {
   },
 
   initSchema: function(mySchema) {
+    mySchema.index({topic: 1, status: 1});
+
     mySchema.pre('save', function(next) {
         //workaround for determining inserts
         this.wasNew = this.isNew;

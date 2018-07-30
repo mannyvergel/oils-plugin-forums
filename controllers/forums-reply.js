@@ -50,6 +50,7 @@ module.exports = {
       if (!post) {
         throw new Error("Post not found.");
       }
+      post.isEdited = "Y";
     } else {
       post = new Post();
       post.createBy = req.user._id;

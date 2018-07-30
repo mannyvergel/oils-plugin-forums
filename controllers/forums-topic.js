@@ -35,28 +35,68 @@ module.exports = {
     }
 
     let table = await web.renderTable(req, Post, {
-      query: {topic: queryTopicId},
+      query: {topic: queryTopicId, status: 'A'},
       sort: {createDt: 1},
-      columns: ['user', 'msg'],
-      labels: ['User', 'Message'],
+      columns: ['msg'],
+      labels: ['Message'],
       populate: 'user',
+      addtlTableClass: "forums-topic",
       handlers: {
         user: function(record, column, escapedVal, callback) {
-          let userStr = "";
-          if (record.user) {
-            userStr = record.user.nickname;
-          }
+          // Not used anymore
+
+          // let userStr = "";
+          // if (record.user) {
+          //   userStr = record.user.nickname;
+          // }
           
-          userStr = web.templateEngine.filters.escape(userStr);
-          callback(null, '<p>' + userStr + '</p>');
+          // userStr = web.templateEngine.filters.escape(userStr);
+          // callback(null, '<p>' + userStr + '</p>');
         },
         msg: function(record, column, escapedVal, callback) {
-          callback(null, marked(record.msg));
+
+          let userStr = "";
+           if (record.user) {
+             userStr = record.user.nickname;
+          }
+
+          userStr = web.stringUtils.escapeHTML(userStr);
+          
+          let markedMsg = marked(record.msg);
+
+          let dateStr = web.dateUtils.formatReadableDateTime(record.updateDt);
+          let rightHandStr = dateStr;
+          if (record.isEdited == "Y") {
+            rightHandStr += " (Edited)";
+          }
+
+          let editStr = "";
+
+          if (req.user && record.user && req.user._id.equals(record.user._id)) {
+            editStr = '<a href="/forums/reply?topic=' + queryTopicId + '&_id=' + record._id + '">Edit</a>'
+          }
+
+          let contentStr = 
+          `<div class="row header-topic">
+             <div class="small-4 columns">${userStr}</div>
+             <div class="small-4 columns" style="text-align: center;">${editStr}</div>
+             <div class="small-4 columns" style="text-align: right;">${rightHandStr}</div>
+           </div>
+           <div class="header-sep"></div>
+           
+            ${markedMsg}
+          `;
+
+          callback(null, contentStr);
         },
       },
     });
 
-		res.renderFile(path.join(pluginConf.viewsDir, 'forums-topic.html'), {table: table, topic: topic, pluginConf: pluginConf});
+		res.renderFile(path.join(pluginConf.viewsDir, 'forums-topic.html'), 
+      {table: table, 
+        topic: topic, 
+        pluginConf: pluginConf
+      });
 
     forumUtils.incrementViewCountForTopic(req, topic);
 

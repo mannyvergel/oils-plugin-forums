@@ -5,37 +5,16 @@
 {% block head %}
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/simplemde@1.11.2/dist/simplemde.min.css">
 <script src="//cdn.jsdelivr.net/npm/simplemde@1.11.2/dist/simplemde.min.js"></script>
-
-<style>
-
-
-input[type=text] {
-  display: block;
-  width: 100%;
-  border-radius: 3px;
-  padding: 12px;
-  font-size: 18px;
-}
-
-
-option {
-  padding: 12px;
-}
-
-select {
-  height: 40px;
-  font-size: 18px;
-  border: 1px solid #ccc;
-  color: #333;
-}
-
-label {
-  line-height: 23px;
-}
-</style>
+<link rel="stylesheet" href="/forums/public/forums-main.css">
 {% endblock %}
 
 {% block content %}
+
+<div class="row">
+  <div class="large-12 columns">
+    <a href="{%if topic%}/forums/topic?_id={{topic._id}}{%elif category%}/forums/category?_id={{category._id}}{%else%}/forums{%endif%}" class="back-to"><i class="fa fa-arrow-left"></i> Back to Topic</a>
+  </div>
+</div>
 
 <form method="POST" name="frmPeso">
 <input type="hidden" name="_csrf" value="{{_csrf}}" />
@@ -44,21 +23,21 @@ label {
 <input type="hidden" name="_id" value="{{post._id}}" />
 {%endif%}
 
-{%if rec._id%}
+{%if post._id%}
 <h1>Update Reply</h1>
 {%else%}
 <h1>New Reply</h1>
 {%endif%}
 
-<div class="row">
+<div class="row reply-row">
   
   <div class="large-12 columns">
 
 
-    <div class="form-group">
-        <label>Message
-        <textarea id="TXT_MSG" name="msg"></textarea>
-        </label>
+    <div class="form-group reply-msg">
+       
+        <textarea id="TXT_MSG" name="msg" style="height: 463px">{{post.msg}}</textarea>
+      
 
     </div>
 
