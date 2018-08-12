@@ -66,7 +66,6 @@ module.exports = {
 
     await post.save();
 
-    Category.addActiveUser(topic.category, req.user);
     Topic.addActiveUser(topic._id, req.user);
 
     req.flash('info', 'Reply posted');

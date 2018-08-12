@@ -12,7 +12,6 @@ module.exports = {
     forum: {type: ObjectId, ref: 'ForumsForum', required: true},
     parentCat:{type: ObjectId, ref: 'ForumsCategory'},
     viewCount: {type: Number, default: 0},
-    activeUsers: [{_id: {type: ObjectId}, username: {type: String}, avatar: {type: String}}],
 
     updateDt: {type: Date, default: Date.now},
     updateBy: {type: String, default: 'SYSTEM'},
@@ -24,6 +23,5 @@ module.exports = {
         let commonFuncs = require('../lib/commonFuncs.js');
 
         schema.statics.incrementViewCount = commonFuncs.incrementViewCount;
-        schema.statics.addActiveUser = commonFuncs.addActiveUser;
      }
 }

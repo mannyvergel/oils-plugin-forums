@@ -27,5 +27,6 @@
   },
   "homepage": "https://github.com/mannyvergel/oils-plugin-forums#readme",
   "dependencies": {
+    "diff": "^3.5.0"
   }
 }

@@ -27,6 +27,8 @@
 You have 0 categories. <a class="btn btn-primary button" href="/admin/forums/categories">Add</a>
 {%else%}
 
+<h2>Categories</h2>
+
 <div class="row">
   
   <div class="large-12 columns">
@@ -40,12 +42,12 @@ You have 0 categories. <a class="btn btn-primary button" href="/admin/forums/cat
           &nbsp;
         </th>
 
-        <th class="large-3 columns">
-          users
+        <th class="large-3 columns" style="text-align: left">
+          Last Active Post
         </th>
 
         <th class="large-1 columns">
-          views
+          Views
         </th>
         
       </tr>
@@ -61,10 +63,16 @@ You have 0 categories. <a class="btn btn-primary button" href="/admin/forums/cat
     			<p class="forums-cat-desc-text">{{category.desc}}</p>
     		</td>
 
-        <td class="large-3 columns users-container">
-          {%for user in category.activeUsers%}
-            {{user.username}}
-          {%endfor%}
+        <td class="large-3 columns last-active-container">
+          <span class="last-active">
+            {%if category.lastActiveTopic%}
+
+            <a href="/forums/topic?_id={{category.lastActiveTopic._id}}">
+              {{category.lastActiveTopic.title.substr(0, 15)}}{%if category.lastActiveTopic.title.length > 15%}...{%endif%}
+            </a>
+             
+            {%endif%} 
+          </span>
         </td>
 
         <td class="large-1 columns viewcount-container">
@@ -79,6 +87,33 @@ You have 0 categories. <a class="btn btn-primary button" href="/admin/forums/cat
 
   </div>
 </div>
+
+{%if topTopics and topTopics.length > 0%}
+
+<h2><a id="topTopics">Top Topics</a></h2>
+
+<div class="large-12 columns">
+  <dl class="sub-nav">
+  <dt></dt>
+  <dd{%if subTab == 'latest'%} class="active"{%endif%}><a href="/forums?subTab=latest#topTopics">Latest</a></dd>
+  <dd{%if subTab == 'mostViewed'%} class="active"{%endif%}><a href="/forums?subTab=mostViewed#topTopics">Most Viewed</a></dd>
+  {#TODO: most active (most replies?)#}
+</dl>
+
+{%for topic in topTopics%}
+<div class="row">
+  <div class="large-12 columns">
+    <a href="/forums/topic?_id={{topic._id}}">{{topic.title}}</a> 
+    {%if subTab == 'latest'%}
+    (posted {{topic.createDt | date('MMM DD, YYYY hh:mm')}})
+    {%else%}
+    ({{topic.viewCount}} views)
+    {%endif%}
+  </div>
+</div>
+{%endfor%}
+
+{%endif%}
 
 {% endblock %}
 

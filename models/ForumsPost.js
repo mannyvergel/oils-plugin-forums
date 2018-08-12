@@ -13,6 +13,12 @@ module.exports = {
     status: {type: String, required: true, default: 'A'}, //[A]ctive, [X]Deleted
     //TODO: array diff column
 
+    //diff
+    diffs: [{
+        diff: [],
+        createDt:{type: Date}
+    }],
+
     isEdited: {type: String},
 
     updateDt: {type: Date, default: Date.now},
