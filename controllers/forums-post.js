@@ -25,6 +25,8 @@ module.exports = {
     }
     let categories = await Category.find({}).sort({name: 1}).lean().exec();
 
+    let numOfPostsOfUser = await Post.find({user: req.user._id}).limit(1).estimatedDocumentCount().exec();
+    let hasPostedBefore = numOfPostsOfUser > 0;
 
     //console.log('!!!!', post, category);
 
@@ -32,6 +34,7 @@ module.exports = {
       { post: post, 
         category: category,
         topic: topic,
+        hasPostedBefore: hasPostedBefore,
         categories: categories,
         pluginConf: pluginConf });
   	

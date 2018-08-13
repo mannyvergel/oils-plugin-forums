@@ -54,9 +54,9 @@ module.exports = {
           let markedMsg = marked(record.msg);
 
           let dateStr = web.dateUtils.formatReadableDateTime(record.updateDt);
-          let rightHandStr = dateStr;
+          let dateModStr = dateStr;
           if (record.isEdited == "Y") {
-            rightHandStr += " (Edited)";
+            dateModStr += " (Edited)";
           }
 
           let editStr = "";
@@ -66,14 +66,17 @@ module.exports = {
           }
 
           let contentStr = 
-          `<div class="row header-topic">
-             <div class="small-4 columns">${userStr}</div>
-             <div class="small-4 columns" style="text-align: center;">${editStr}</div>
-             <div class="small-4 columns" style="text-align: right;">${rightHandStr}</div>
+          `
+          ${markedMsg}
+
+          <div class="header-sep"></div> 
+
+          <div class="row header-topic">
+             <div class="small-8 columns">by ${userStr} ${dateModStr}</div>
+             <div class="small-4 columns" style="text-align: right;">${editStr}</div>
            </div>
-           <div class="header-sep"></div>
-           
-            ${markedMsg}
+          
+            
           `;
 
           callback(null, contentStr);

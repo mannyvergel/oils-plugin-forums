@@ -109,6 +109,7 @@
 
 .forums-topic tr td {
   vertical-align: top;
+  padding-top: 20px;
 }
 
 .forums-topic thead {
@@ -117,6 +118,7 @@
 
 .row.header-topic {
   margin-bottom: 12px;
+  padding: 0 12px;
 }
 
 .header-sep {
