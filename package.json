@@ -28,5 +28,8 @@
   "homepage": "https://github.com/mannyvergel/oils-plugin-forums#readme",
   "dependencies": {
     "diff": "^3.5.0"
+  },
+  "peerDependencies": {
+    "oils-plugin-subcription": "3.x"
   }
 }

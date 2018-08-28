@@ -87,6 +87,8 @@ module.exports = {
 
       Topic.addActiveUser(topic._id, req.user);
 
+      web.subs.subscribe(post.topic, req.user._id);
+
       req.flash('info', 'Message posted');
       res.redirect('/forums/topic?_id=' + topic._id);
 

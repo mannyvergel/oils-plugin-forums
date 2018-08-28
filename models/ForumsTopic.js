@@ -19,9 +19,21 @@ module.exports = {
   },
   initSchema: function(schema) {
 
-        let commonFuncs = require('../lib/commonFuncs.js');
+      let commonFuncs = require('../lib/commonFuncs.js');
 
-        schema.statics.incrementViewCount = commonFuncs.incrementViewCount;
-        schema.statics.addActiveUser = commonFuncs.addActiveUser;
-     }
+      schema.statics.incrementViewCount = commonFuncs.incrementViewCount;
+      schema.statics.addActiveUser = commonFuncs.addActiveUser;
+
+
+      schema.pre('save', function (next) {
+        this.wasNew = this.isNew;
+        next();
+      });
+
+      schema.post('save', function () {
+        if (this.wasNew) {
+          web.subs.newSubscription(this._id, "ForumsTopic", this.title);
+        }
+      });
+   }
 }
