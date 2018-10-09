@@ -45,8 +45,8 @@ module.exports = {
         msg: function(record, column, escapedVal, callback) {
 
           let userStr = "";
-           if (record.user) {
-             userStr = record.user.nickname;
+          if (record.user) {
+             userStr = record.user.nickname || record.user.username;
           }
 
           userStr = web.stringUtils.escapeHTML(userStr);

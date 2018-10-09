@@ -35,9 +35,20 @@ module.exports = async function(pluginConf, web, done) {
   pluginConf = Object.assign(require('./conf/conf.js'), pluginConf);
   pluginConf.userProfileNeedsUpdating = true;
 
-  web.plugins['oils-plugin-forums'].conf = pluginConf;
-  web.plugins['oils-plugin-forums'].constants = require('./conf/constants.js');
-  web.plugins['oils-plugin-forums'].utils = require('./lib/utils.js');
+  let pluginForums = web.plugins['oils-plugin-forums'];
+
+  pluginForums.conf = pluginConf;
+  pluginForums.constants = require('./conf/constants.js');
+  pluginForumsutils = require('./lib/utils.js');
+
+  //subscription
+  pluginForums.subs = web.subs || { 
+    //later can be customised
+
+  };
+
+  //convenience
+  web.forums = pluginForums;
 
   loadModels(pluginConf);
 
