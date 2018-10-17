@@ -68,7 +68,7 @@ You have 0 categories. <a class="btn btn-primary button" href="/admin/forums/cat
             {%if category.lastActiveTopic%}
 
             <a href="/forums/topic?_id={{category.lastActiveTopic._id}}">
-              {{category.lastActiveTopic.title.substr(0, 15)}}{%if category.lastActiveTopic.title.length > 15%}...{%endif%}
+              {{category.lastActiveTopic.title.substr(0, 40)}}{%if category.lastActiveTopic.title.length > 40%}...{%endif%}
             </a>
              
             {%endif%} 

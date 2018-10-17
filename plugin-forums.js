@@ -39,7 +39,7 @@ module.exports = async function(pluginConf, web, done) {
 
   pluginForums.conf = pluginConf;
   pluginForums.constants = require('./conf/constants.js');
-  pluginForumsutils = require('./lib/utils.js');
+  pluginForums.utils = require('./lib/utils.js');
 
   //subscription
   pluginForums.subs = web.subs || { 

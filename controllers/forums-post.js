@@ -43,54 +43,73 @@ module.exports = {
   post: [web.auth.loginUtils.handleLogin, async function(req, res) {
    
       //TODO: checker for double posts
+    
+      try {
+            
+        let topic = new Topic();
+        topic.title = req.body.title || "";
+        topic.title = topic.title.trim();
 
-      let topic = new Topic();
-      topic.title = req.body.title;
-      topic.category = req.body.category;
-
-      let tags = [];
-      let tagStr = req.body.tags;
-      let arrUncleanTags;
-      
-      if (tagStr.indexOf("#") != -1) {
-        arrUncleanTags = tagStr.split('#');
-      } else {
-        arrUncleanTags = tagStr.split(',');
-      }
-
-      for (let i in arrUncleanTags) {
-        let cleanTag = arrUncleanTags[i].trim().toLowerCase();
-        if (!web.stringUtils.isEmpty(cleanTag)) {
-          tags.push(cleanTag);
+        if (web.stringUtils.isEmpty(topic.title)) {
+          throw new Error("Title is required.");
         }
+        topic.category = req.body.category;
+
+        let tags = [];
+        let tagStr = req.body.tags;
+        let arrUncleanTags;
         
+        if (tagStr.indexOf("#") != -1) {
+          arrUncleanTags = tagStr.split('#');
+        } else {
+          arrUncleanTags = tagStr.split(',');
+        }
+
+        for (let i in arrUncleanTags) {
+          let cleanTag = arrUncleanTags[i].trim().toLowerCase();
+          if (!web.stringUtils.isEmpty(cleanTag)) {
+            tags.push(cleanTag);
+          }
+          
+        }
+
+        topic.tags = tags;
+
+        topic.createBy = req.user._id;
+        topic.updateBy = req.user._id;
+        topic.updateDt = new Date();
+
+        await topic.save();
+
+        let post = new Post();
+        post.topic = topic._id;
+        post.msg = req.body.msg || "";
+        post.msg = post.msg.trim();
+
+        if (web.stringUtils.isEmpty(post.msg)) {
+          throw new Error("Message is required.");
+        }
+
+        post.user = req.user._id;
+
+
+        post.createBy = req.user._id;
+        post.updateBy = req.user._id;
+        post.updateDt = new Date();
+
+        await post.save();
+
+        Topic.addActiveUser(topic._id, req.user);
+
+        web.subs.subscribe(post.topic, req.user._id);
+
+        req.flash('info', 'Message posted');
+        res.redirect('/forums/topic?_id=' + topic._id);
+      } catch (ex) {
+        console.error(ex);
+        req.flash('error', ex.message);
+        res.redirect('/forums/post?category=' + encodeURIComponent(req.body.category));
       }
-      topic.tags = tags;
-
-      topic.createBy = req.user._id;
-      topic.updateBy = req.user._id;
-      topic.updateDt = new Date();
-
-      await topic.save();
-
-      let post = new Post();
-      post.topic = topic._id;
-      post.msg = req.body.msg;
-      post.user = req.user._id;
-
-
-      post.createBy = req.user._id;
-      post.updateBy = req.user._id;
-      post.updateDt = new Date();
-
-      await post.save();
-
-      Topic.addActiveUser(topic._id, req.user);
-
-      web.subs.subscribe(post.topic, req.user._id);
-
-      req.flash('info', 'Message posted');
-      res.redirect('/forums/topic?_id=' + topic._id);
 
   }]
 }

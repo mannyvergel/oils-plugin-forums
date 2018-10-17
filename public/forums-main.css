@@ -92,6 +92,7 @@
 
 .forums-cat tbody tr td {
   padding: 18px 10px;
+  line-height: 20px;
 }
 
 .forums-cat table {
