@@ -5,6 +5,7 @@ const pluginConf = forumPlugin.conf;
 const path = require('path');
 const Topic = web.models('ForumsTopic');
 const dateUtils = require('../lib/dateUtils.js');
+const title = 'Welcome to Forums!';
 
 module.exports = {
   get: async function(req, res) {
@@ -33,7 +34,9 @@ async function handleGetLatest(req, res, tabMap, selectedTab) {
         table: table,
         pluginConf: pluginConf, 
         tabs: Object.values(tabMap),
-        selectedTab: selectedTab
+        selectedTab: selectedTab,
+        title: title,
+        tabDesc: tabMap[selectedTab].desc,
       }); 
 
 }
@@ -46,7 +49,9 @@ async function handleGetMostViewed(req, res, tabMap, selectedTab) {
         table: table, 
         pluginConf: pluginConf, 
         tabs: Object.values(tabMap),
-        selectedTab: selectedTab
+        selectedTab: selectedTab,
+        title: title,
+        tabDesc: tabMap[selectedTab].desc,
       }); 
 }
 
@@ -69,7 +74,9 @@ async function handleGetCategories(req, res, tabMap, selectedTab) {
       {categories: categories, 
         pluginConf: pluginConf, 
         tabs: Object.values(tabMap),
-        selectedTab: selectedTab
+        selectedTab: selectedTab,
+        title: title,
+        tabDesc: tabMap[selectedTab].desc,
       }); 
 
 }

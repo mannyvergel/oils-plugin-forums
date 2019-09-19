@@ -1,6 +1,6 @@
 {% extends pluginConf.mainTemplate %}
 
-{% block title %}Forums{% endblock %}
+{% block title %}Forums - {{tabDesc}}{% endblock %}
 
 {% block head %}
 
@@ -14,7 +14,7 @@
 {% endblock %}
 {% block content %}
 
-<h1>Welcome to Forums!</h1>
+<h1>{{title}}</h1>
 
 <div class="row" style="margin-bottom: 0px">  
   <div class="large-12 columns">
@@ -44,7 +44,7 @@
 {%else%}
 
 
-<div class="forums-cat" style="margin-top: 0; padding-top: 0">
+<div class="forums-cat">
 {{table | safe}}
 </div>
 
