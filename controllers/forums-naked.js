@@ -1,3 +1,5 @@
+'use strict';
+
 const Forum = web.models('ForumsForum');
 
 module.exports = {

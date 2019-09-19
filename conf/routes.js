@@ -1,3 +1,5 @@
+'use strict';
+
 const pluginConf = web.plugins['oils-plugin-forums'].conf;
 const controllersDir = pluginConf.controllersDir;
 const path = require('path');

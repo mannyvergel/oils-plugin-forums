@@ -1,3 +1,5 @@
+'use strict';
+
 //TODO: might not be needed.
 module.exports = {
 	get: function(req, res) {

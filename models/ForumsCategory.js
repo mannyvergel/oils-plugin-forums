@@ -1,3 +1,5 @@
+'use strict';
+
 const mongoose = web.require('mongoose');
 const Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;

@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path');
 const pluginConf = web.plugins['oils-plugin-forums'].conf;
 

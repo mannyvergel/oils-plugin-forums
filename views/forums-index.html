@@ -94,11 +94,12 @@ You have 0 categories. <a class="btn btn-primary button" href="/admin/forums/cat
 
 <div class="large-12 columns">
   <dl class="sub-nav">
-  <dt></dt>
-  <dd{%if subTab == 'latest'%} class="active"{%endif%}><a href="/forums?subTab=latest#topTopics">Latest</a></dd>
-  <dd{%if subTab == 'mostViewed'%} class="active"{%endif%}><a href="/forums?subTab=mostViewed#topTopics">Most Viewed</a></dd>
-  {#TODO: most active (most replies?)#}
-</dl>
+    <dt></dt>
+    <dd{%if subTab == 'latest'%} class="active"{%endif%}><a href="/forums?subTab=latest#topTopics">Latest</a></dd>
+    <dd{%if subTab == 'mostViewed'%} class="active"{%endif%}><a href="/forums?subTab=mostViewed#topTopics">Most Viewed</a></dd>
+    {#TODO: most active (most replies?)#}
+  </dl>
+</div>
 
 {%for topic in topTopics%}
 <div class="row">
