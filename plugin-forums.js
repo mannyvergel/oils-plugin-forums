@@ -142,11 +142,7 @@ async function defaultForumMiddleware(req, res, next) {
         if (forumId) {
           //TODO: permission to get this forum!!
           forumParams = {forumId: forumId};
-        } else {
-          forumFinder = Forum.find({}).limit(2);
-
-        }
-
+        } 
         let forums = await Forum.find(forumParams).limit(2).lean().exec();
 
         if (!forums) {

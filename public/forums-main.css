@@ -6,8 +6,11 @@
 
 .forums-cat-icon {
   color: white;
-  text-align: center;
-  
+  text-align: center; 
+}
+
+.forums-cat a {
+  color: #333;
 }
 
 .forums-cat-icon.news {
@@ -95,6 +98,18 @@
   line-height: 20px;
 }
 
+.forums-cat tbody tr td.col2 {
+  width: 120px;
+}
+
+.forums-cat tbody tr td.col3 {
+  width: 50px;
+}
+
+.forums-cat tbody tr td.col4 {
+  width: 90px;
+}
+
 .forums-cat table {
   width: 100%;
 }
@@ -134,5 +149,13 @@
 .back-to {
   display: block;
   margin-bottom: 20px;
+}
+
+.tab-table-row-wrapper {
+  padding: 0 1.125rem;
+}
+
+.tab-table-row {
+  border-bottom: 1px solid #eee;
 }
 

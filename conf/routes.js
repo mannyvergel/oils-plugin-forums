@@ -8,6 +8,8 @@ const forwarder = require('../controllers/forums-forwarder.js');
 module.exports = {
   '/forums': web.include(path.join(controllersDir, 'forums-index.js')),
 
+  '/forums/tab/:tab': web.include(path.join(controllersDir, 'forums-index-tab.js')),
+
   '/forums/public/forums-main.css': function(req, res, next) {web.utils.serveStaticFile(pluginConf.pluginPath + '/public/forums-main.css', res)},
 
   '/forums/post': web.include(path.join(controllersDir, 'forums-post.js')),

@@ -14,8 +14,9 @@ module.exports = {
 		let table = await web.renderTable(req, Topic, {
 		  query: {category: queryCatId},
 		  sort: {updateDt: -1},
+      tableTemplate: path.join(pluginConf.pluginPath, '/conf/templates/forums-table-template.html'),
 		  columns: ['title', 'activeUsers', 'viewCount', 'activity'],
-		  labels: ['Title', 'Users', 'Views', 'Activity'],
+		  labels: ['', 'Users', 'Views', 'Activity'],
       handlers: {
         title: function(record, column, escapedVal, callback) {
           callback(null, '<a class="topic-title" href="/forums/topic?_id=' + record._id + '">' + escapedVal + '</a>');
