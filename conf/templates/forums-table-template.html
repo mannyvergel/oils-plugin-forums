@@ -5,7 +5,7 @@
 <thead>
 <tr>
 {%for fieldLabel in table.labels%}
-<td>{{fieldLabel}}</td>
+<td class="col{{loop.index}}">{{fieldLabel}}</td>
 {%endfor%}
 </tr>
 </thead>

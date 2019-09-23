@@ -5,7 +5,7 @@ const pluginConf = forumPlugin.conf;
 const path = require('path');
 const Topic = web.models('ForumsTopic');
 const dateUtils = require('../lib/dateUtils.js');
-const title = 'Welcome to Forums!';
+const title = 'Welcome to the Forums!';
 
 module.exports = {
   get: async function(req, res) {

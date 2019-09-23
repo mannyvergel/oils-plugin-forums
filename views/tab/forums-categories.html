@@ -55,10 +55,12 @@ You have 0 categories. <a class="btn btn-primary button" href="/admin/forums/cat
         <th class="large-3 columns" style="text-align: left">
           Last Active Post
         </th>
-
+        
+        {#
         <th class="large-1 columns">
           Views
         </th>
+        #}
         
       </tr>
     {%for category in categories%}
@@ -85,9 +87,11 @@ You have 0 categories. <a class="btn btn-primary button" href="/admin/forums/cat
           </span>
         </td>
 
+        {#
         <td class="large-1 columns viewcount-container">
           <span class="viewcount">{{category.viewCount}}</span>
         </td>
+        #}
         
       </tr>
     {%endfor%}
