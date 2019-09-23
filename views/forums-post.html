@@ -39,7 +39,10 @@ label {
 
 <div class="row">
   <div class="large-12 columns">
-    <a href="{%if topic%}/forums/topic?_id={{topic._id}}{%elif category%}/forums/category?_id={{category._id}}{%else%}/forums{%endif%}" class="back-to">Cancel</a>
+    <a href="{%if topic%}/forums/topic?_id={{topic._id}}{%elif category%}/forums/category?_id={{category._id}}{%else%}/forums{%endif%}" class="back-to" onclick="return confirm('Are you sure you want to go back without posting?')">
+    <i class="fa fa-arrow-left"></i>
+    Back
+  </a>
   </div>
 </div>
 
@@ -92,7 +95,7 @@ label {
 <div class="row">
   
   <div class="large-6 columns">
-    <button class="btn btn-primary button" type="submit">Post</button>
+    <button class="btn btn-primary button alert" type="submit">Post</button>
   </div>
 
 {#
