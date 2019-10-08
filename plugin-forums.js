@@ -60,6 +60,8 @@ module.exports = async function(pluginConf, web, done) {
     items:[
       { text: 'Forum', link:'/admin/forums'},
       { text: 'Categories', link:'/admin/forums/categories'},
+      { text: 'All Posts', link:'/admin/dbedit/list?model=ForumsPost&sort=%7B%22createDt%22%3A-1%7D&displayName=All%20Posts'},
+      { text: 'Pending Posts', link:'/admin/dbedit/list?model=ForumsPost&filter=%7B%22status%22%3A%22P%22%7D&displayName=Pending%20Posts'},
     ]
   })
 

@@ -4,9 +4,12 @@ const mongoose = web.require('mongoose');
 const Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 
+const stringUtils = require('../lib/stringUtils.js');
+
 module.exports = {
   schema: {
     title: {type: String, required: true},
+    titleSlug: {type: String, required: true},
     category: {type: ObjectId, ref: 'ForumsCategory', required: true},
     tags: [{type: String}],
     viewCount: {type: Number, default: 0},
@@ -26,15 +29,24 @@ module.exports = {
       schema.statics.incrementViewCount = commonFuncs.incrementViewCount;
       schema.statics.addActiveUser = commonFuncs.addActiveUser;
 
+      schema.pre('validate', function(next) {
+
+        if (web.stringUtils.isEmpty(this.titleSlug)) {
+          this.titleSlug = encodeURIComponent(stringUtils.convertToSlug(this.title));
+        }
+
+        next();
+      })
 
       schema.pre('save', function (next) {
         this.wasNew = this.isNew;
+
         next();
       });
 
       schema.post('save', function () {
         if (this.wasNew) {
-          web.subs.newSubscription(this._id, "ForumsTopic", this.title);
+          // web.subs.newSubscription(this._id, "ForumsTopic", this.title);
         }
       });
    }

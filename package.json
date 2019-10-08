@@ -26,7 +26,10 @@
     "node": ">= 8.0.0"
   },
   "homepage": "https://github.com/mannyvergel/oils-plugin-forums#readme",
-  "dependencies": {},
+  "dependencies": {
+    "dompurify": "^2.0.4",
+    "jsdom": "^15.1.1"
+  },
   "peerDependencies": {
     "oils-plugin-subcription": "3.x"
   }

@@ -3,11 +3,11 @@
 {% block title %}Post a Message / Ask a Question{% endblock %}
 
 {% block head %}
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/simplemde@1.11.2/dist/simplemde.min.css">
 <script src="//cdn.jsdelivr.net/npm/simplemde@1.11.2/dist/simplemde.min.js"></script>
 
 <style>
-
 
 input[type=text] {
   display: block;
@@ -39,7 +39,7 @@ label {
 
 <div class="row">
   <div class="large-12 columns">
-    <a href="{%if topic%}/forums/topic?_id={{topic._id}}{%elif category%}/forums/category?_id={{category._id}}{%else%}/forums{%endif%}" class="back-to" onclick="return confirm('Are you sure you want to go back without posting?')">
+    <a href="{%if topic._id%}/forums/topic/{{topic._id}}/{{topic.titleSlug}}{%elif category%}/forums/category/{{category._id}}/{{category.slug}}{%else%}/forums{%endif%}" class="back-to" onclick="return confirm('Are you sure you want to go back without posting?')">
     <i class="fa fa-arrow-left"></i>
     Back
   </a>
@@ -48,10 +48,10 @@ label {
 
 <form method="POST" name="frmPeso">
 <input type="hidden" name="_csrf" value="{{_csrf}}" />
-{%if rec._id%}
-<h1>Update Post</h1>
+{%if topic._id%}
+<h1>Update Topic</h1>
 {%else%}
-<h1>New Post</h1>
+<h1>New Topic</h1>
 {%endif%}
 
 
@@ -61,7 +61,7 @@ label {
 
     <div class="form-group">
         <label>Title
-        <input type="text" class="form-control" name="title" value="{{rec.title}}">
+        <input type="text" class="form-control" name="title" value="{{topic.title}}">
         </label>
     </div>
 
@@ -77,7 +77,7 @@ label {
 
     <div class="form-group">
         <label>Message (this uses the <a target="_blank" href="https://guides.github.com/features/mastering-markdown/">Markdown</a> format)
-        <textarea id="TXT_MSG" name="msg" style="height: 433px" placeholder="{%if not hasPostedBefore%}Haven't posted before? Please read this:&#10;&#10;Please add details to your post. It would also help at times if you introduce yourself and tell us what you so it can help other people in answering your question.&#10;&#10;Write in full sentences, be polite, and the community is here to help you.&#10;&#10;Thank you!{%endif%}"></textarea>
+        <textarea id="TXT_MSG" name="msg" style="height: 433px" placeholder="{%if not hasPostedBefore%}Haven't posted before? Please read this:&#10;&#10;Please add details to your post. It would also help at times if you introduce yourself and tell us what you so it can help other people in answering your question.&#10;&#10;Write in full sentences, be polite, and the community is here to help you.&#10;&#10;Thank you!{%endif%}">{{post.msg}}</textarea>
         </label>
 
     </div>
@@ -85,7 +85,7 @@ label {
 
     <div class="form-group">
         <label>Tags
-        <input type="text" class="form-control" name="tags" value="{{rec.title}}" placeholder="comma, separated, words">
+        <input type="text" class="form-control" name="tags" value="{%if topic.tags%}{{topic.tags.join(', ')}}{%endif%}" placeholder="comma, separated">
         </label>
     </div>
 
@@ -95,14 +95,15 @@ label {
 <div class="row">
   
   <div class="large-6 columns">
-    <button class="btn btn-primary button alert" type="submit">Post</button>
+    <button class="btn btn-primary button alert" type="submit">
+    {%if topic._id%}
+    Save
+    {%else%}
+    Post
+    {%endif%}
+    </button>
   </div>
 
-{#
-  <div class="large-6 columns" style="text-align: right;">
-    <a class="btn button secondary" href="/forums/topic?_id={{category._id}}">Cancel</a>
-  </div>
-  #}
 
 </div>
 
@@ -110,12 +111,18 @@ label {
 
 {% endblock %}
 
-
-{%block bodyend%}
+{% block beforeEndBody %}
 <script>
   var simplemde = new SimpleMDE({ element: document.getElementById("TXT_MSG") });
 </script>
 
-{%endblock%}
+<script src="//twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      twemoji.parse(document.getElementById("MAIN_BODY"));
+  });
+</script>
+{% endblock %}
+
 
 

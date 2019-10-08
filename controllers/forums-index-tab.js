@@ -5,19 +5,30 @@ const pluginConf = forumPlugin.conf;
 const path = require('path');
 const Topic = web.models('ForumsTopic');
 const dateUtils = require('../lib/dateUtils.js');
-const title = 'Welcome to the Forums!';
+const dmsUtils = web.cms.utils;
 
 module.exports = {
   get: async function(req, res) {
     const tabMap = forumPlugin.constants.indexTab;
     const selectedTab = req.params['tab'];
 
+    const addtlRenderParams = {};
+
+    const docForums = await dmsUtils.retrieveDoc('/forums.json');
+    const _forums = JSON.parse(docForums.content.toString() || "{}");
+    
+    // console.debug("Retrieving forum dms setting", _forums)
+
+    addtlRenderParams.indexAnnouncement = _forums.indexAnnouncement;
+
+    addtlRenderParams.title = _forums.indexTitle || "Forums";
+
     if (selectedTab === tabMap.latest.id) {
-      handleGetLatest(req, res, tabMap, selectedTab);
+      handleGetLatest(req, res, tabMap, selectedTab, addtlRenderParams);
     } else if (selectedTab == tabMap.mostviewed.id) {
-      handleGetMostViewed(req, res, tabMap, selectedTab);
+      handleGetMostViewed(req, res, tabMap, selectedTab, addtlRenderParams);
     } else if (selectedTab == tabMap.categories.id) {
-      handleGetCategories(req, res, tabMap, selectedTab);
+      handleGetCategories(req, res, tabMap, selectedTab, addtlRenderParams);
     } else {
       throw new Error("Invalid tab");
     }
@@ -25,37 +36,43 @@ module.exports = {
   }
 }
 
-async function handleGetLatest(req, res, tabMap, selectedTab) {
+async function handleGetLatest(req, res, tabMap, selectedTab, addtlRenderParams) {
 
-  let table = await getTable({req, query:{status:'A'}, sort:{createDt: -1}})
+  let table = await getTable({req, query:{status:'A'}, sort:{createDt: -1}});
 
-  res.renderFile(path.join(pluginConf.viewsDir, 'tab/forums-latest-mostviewed.html'), 
-      {
-        table: table,
-        pluginConf: pluginConf, 
-        tabs: Object.values(tabMap),
-        selectedTab: selectedTab,
-        title: title,
-        tabDesc: tabMap[selectedTab].desc,
-      }); 
+  const renderParams = {};
+  Object.assign(renderParams,
+  {
+    table: table,
+    pluginConf: pluginConf, 
+    tabs: Object.values(tabMap),
+    selectedTab: selectedTab,
+    tabDesc: tabMap[selectedTab].desc,
+  },
+  addtlRenderParams);
+
+  res.renderFile(path.join(pluginConf.viewsDir, 'tab/forums-latest-mostviewed.html'), renderParams); 
 
 }
 
-async function handleGetMostViewed(req, res, tabMap, selectedTab) {
-  let table = await getTable({req, query:{status:'A'}, sort:{viewCount: -1}})
+async function handleGetMostViewed(req, res, tabMap, selectedTab, addtlRenderParams) {
+  let table = await getTable({req, query:{status:'A'}, sort:{viewCount: -1}});
 
-  res.renderFile(path.join(pluginConf.viewsDir, 'tab/forums-latest-mostviewed.html'), 
-      {
-        table: table, 
-        pluginConf: pluginConf, 
-        tabs: Object.values(tabMap),
-        selectedTab: selectedTab,
-        title: title,
-        tabDesc: tabMap[selectedTab].desc,
-      }); 
+  const renderParams = {};
+  Object.assign(renderParams,
+  {
+    table: table, 
+    pluginConf: pluginConf, 
+    tabs: Object.values(tabMap),
+    selectedTab: selectedTab,
+    tabDesc: tabMap[selectedTab].desc, 
+  },
+  addtlRenderParams);
+
+  res.renderFile(path.join(pluginConf.viewsDir, 'tab/forums-latest-mostviewed.html'), renderParams); 
 }
 
-async function handleGetCategories(req, res, tabMap, selectedTab) {
+async function handleGetCategories(req, res, tabMap, selectedTab, addtlRenderParams) {
   const Category = web.models('ForumsCategory');
   let categories = await Category.find({}).lean().sort({seq: 1}).exec();
 
@@ -70,14 +87,18 @@ async function handleGetCategories(req, res, tabMap, selectedTab) {
     }
   }
 
-  res.renderFile(path.join(pluginConf.viewsDir, 'tab/forums-categories.html'), 
-      {categories: categories, 
-        pluginConf: pluginConf, 
-        tabs: Object.values(tabMap),
-        selectedTab: selectedTab,
-        title: title,
-        tabDesc: tabMap[selectedTab].desc,
-      }); 
+  const renderParams = {};
+  Object.assign(renderParams, 
+    {
+      categories: categories, 
+      pluginConf: pluginConf, 
+      tabs: Object.values(tabMap),
+      selectedTab: selectedTab,
+      tabDesc: tabMap[selectedTab].desc,
+    }, 
+    addtlRenderParams);
+
+  res.renderFile(path.join(pluginConf.viewsDir, 'tab/forums-categories.html'), renderParams); 
 
 }
 
@@ -85,12 +106,13 @@ async function getTable({req, query, sort}) {
   let table = await web.renderTable(req, Topic, {
       query: query,
       sort: sort,
+      noRecordsFoundLabel: 'No posts yet.',
       tableTemplate: path.join(pluginConf.pluginPath, '/conf/templates/forums-table-template.html'),
       columns: ['title', 'activeUsers', 'viewCount', 'activity'],
       labels: ['', 'Users', 'Views', 'Activity'],
       handlers: {
         title: function(record, column, escapedVal, callback) {
-          callback(null, '<a class="topic-title" href="/forums/topic?_id=' + record._id + '">' + escapedVal + '</a>');
+          callback(null, '<a class="topic-title" href="/forums/topic/' + record._id + '/' + record.titleSlug + '">' + escapedVal + '</a>');
         },
         activeUsers: function(record, column, escapedVal, callback) {
           let str = "";

@@ -4,9 +4,12 @@ const mongoose = web.require('mongoose');
 const Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 
+const stringUtils = require('../lib/stringUtils.js');
+
 module.exports = {
   schema: {
     name: {type: String, required: true},
+    slug: {type: String, required: true},
     desc: {type: String},
     seq: {type: Number},
     color: {type: String},
@@ -22,8 +25,17 @@ module.exports = {
   },
   initSchema: function(schema) {
 
-        let commonFuncs = require('../lib/commonFuncs.js');
+    schema.pre('validate', function(next) {
 
-        schema.statics.incrementViewCount = commonFuncs.incrementViewCount;
-     }
+      if (web.stringUtils.isEmpty(this.slug)) {
+        this.slug = encodeURIComponent(stringUtils.convertToSlug(this.name));
+      }
+
+      next();
+    })
+
+    let commonFuncs = require('../lib/commonFuncs.js');
+
+    schema.statics.incrementViewCount = commonFuncs.incrementViewCount;
+  }
 }

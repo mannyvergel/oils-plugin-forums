@@ -8,18 +8,30 @@ const dateUtils = require('../lib/dateUtils.js');
 
 module.exports = {
   get: async function(req, res) {
-		let queryCatId = req.query._id;
+		const queryCatId = req.query._id || req.params.CAT_ID;
+
 		let category = await Category.findOne({_id: queryCatId}).lean().sort({seq: 1}).exec();
+
+    if (!category) {
+      throw new Error("Category not found.");
+    }
+    
+    const paramsSlug = req.params.SLUG;
+    if (!web.stringUtils.isEmpty(category.slug) && category.slug !== paramsSlug) {
+      res.redirect('/forums/category/' + queryCatId + '/' + category.slug);
+      return;
+    }
     
 		let table = await web.renderTable(req, Topic, {
 		  query: {category: queryCatId},
 		  sort: {updateDt: -1},
+      noRecordsFoundLabel: 'No posts yet.',
       tableTemplate: path.join(pluginConf.pluginPath, '/conf/templates/forums-table-template.html'),
 		  columns: ['title', 'activeUsers', 'viewCount', 'activity'],
 		  labels: ['', 'Users', 'Views', 'Activity'],
       handlers: {
         title: function(record, column, escapedVal, callback) {
-          callback(null, '<a class="topic-title" href="/forums/topic?_id=' + record._id + '">' + escapedVal + '</a>');
+          callback(null, '<a class="topic-title" href="/forums/topic/' + record._id + '/' + record.titleSlug + '">' + escapedVal + '</a>');
         },
         activeUsers: function(record, column, escapedVal, callback) {
           let str = "";

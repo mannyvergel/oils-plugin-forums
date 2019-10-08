@@ -6,6 +6,7 @@ const Post = web.models('ForumsPost');
 const path = require('path');
 const Topic = web.models('ForumsTopic');
 const Category = web.models('ForumsCategory');
+const userUtils = require('../lib/userUtils.js');
 
 module.exports = {
   get: [web.auth.loginUtils.handleLogin, async function(req, res) {
@@ -15,6 +16,9 @@ module.exports = {
 		let post = {};
 		if (queryPostId) {
 			post = await Post.findOne({_id: queryPostId}).lean().populate('topic').exec();
+      if (!req.user._id.equals(post.createBy)) {
+        throw new Error("Topic not found.. invalid request.");
+      }
 		}
 
     if (!req.query.topic) {
@@ -40,8 +44,9 @@ module.exports = {
   post: [web.auth.loginUtils.handleLogin, async function(req, res) {
     
     //TODO: checker for double posts
+    const topicIdStr = req.body.topicId;
 
-    let topic = await Topic.findOne({_id: req.body.topicId});
+    let topic = await Topic.findOne({_id: topicIdStr});
     if (!topic) {
       throw new Error("Topic not found.");
     }
@@ -59,9 +64,12 @@ module.exports = {
     }
 
     post.topic = topic._id;
-    post.msg = req.body.msg;
+    post.msg = req.body.msg && req.body.msg.trim();
     post.user = req.user._id;
 
+    if (web.stringUtils.isEmpty(post.msg)) {
+      throw new Error("Message cannot be empty.");
+    }
 
     post.updateBy = req.user._id;
     post.updateDt = new Date();
@@ -70,10 +78,40 @@ module.exports = {
 
     Topic.addActiveUser(topic._id, req.user);
 
-    web.subs.subscribe(post.topic, req.user._id);
+    const subsTopicId = "topic_" + topicIdStr;
+
+    // web.subs.subscribe(subsTopicId, req.user._id);
 
     req.flash('info', 'Reply posted');
-    res.redirect('/forums/topic?_id=' + topic._id);
+    res.redirect('/forums/topic/' + topicIdStr + '/' + topic.titleSlug);
+
+
+    try {
+
+      
+    } catch (ex) {
+      console.error("Error sending email", ex);
+    }
 
   }]
+}
+
+
+async function afterPosting() {
+  const userIds = Array.from(await web.subs.getSubscribers(post.topic));
+  userIds.splice(users.indexOf(post.user), 1);
+  const emails = userUtils.getEmailsFromUserIds(userIds);
+
+  if (emails.length > 0) {
+    web.mailingListUtils.email({
+      conf: {
+        sendEmailListId: subsTopicId,
+      },
+
+      to: emails,
+      subj: 'Someone posted a message - Pesobility Forums',
+      body: `Hu
+`
+    });  
+  }
 }

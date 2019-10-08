@@ -14,9 +14,11 @@
 {% endblock %}
 {% block content %}
 
-<a href="/forums/tab/categories" class="back-to"><i class="fa fa-arrow-left"></i> Back to Categories</a>
-
-<h1>{{category.name}}</h1>
+<ul class="breadcrumbs">
+  <li><a href="/forums/tab/categories">Categories</a></li>
+  
+  <li class="current"><a href="#">{{category.name}}</a></li>
+</ul>
 
 <a href="/forums/post?category={{category._id.toString()}}" class="button btn btn-primary alert small">New Topic</a>
 
@@ -24,6 +26,15 @@
 {{table | safe}}
 </div>
 
+{% endblock %}
+
+{% block beforeEndBody %}
+<script src="//twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      twemoji.parse(document.getElementById("MAIN_BODY"));
+  });
+</script>
 {% endblock %}
 
 

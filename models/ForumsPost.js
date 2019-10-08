@@ -23,6 +23,9 @@ module.exports = {
 
     isEdited: {type: String},
 
+    flagged: {type: String, index: true}, //Y / null
+    flags: [{flag: String, flaggedBy: ObjectId}],
+
     updateDt: {type: Date, default: Date.now},
     updateBy: {type: String, default: 'SYSTEM'},
     createDt: {type: Date, default: Date.now},
@@ -31,6 +34,8 @@ module.exports = {
 
   initSchema: function(mySchema) {
     mySchema.index({topic: 1, status: 1});
+
+    mySchema.index({createDt: -1});
 
     mySchema.pre('save', function(next) {
         //workaround for determining inserts

@@ -16,6 +16,10 @@
 
 <h1>{{title}}</h1>
 
+{%if indexAnnouncement%}
+<p>{{indexAnnouncement}}</p>
+{%endif%}
+
 <div class="row" style="margin-bottom: 0px">  
   <div class="large-12 columns">
   <a class="btn btn-primary button alert small" href="/forums/post">Ask a Question / Post a Message</a>
@@ -43,7 +47,7 @@ You have 0 categories. <a class="btn btn-primary button" href="/admin/forums/cat
   
   <div class="large-12 columns">
 
-    <table class="forums">
+    <table class="forums table">
       <tr class="row forums-cat">
         <th class="first large-1 columns">
           &nbsp;
@@ -71,7 +75,7 @@ You have 0 categories. <a class="btn btn-primary button" href="/admin/forums/cat
           {%endif%}
         </td>
         <td class="large-7 columns forums-cat-text-container">
-          <div><a href="/forums/category?_id={{category._id}}" class="forums-cat-text">{{category.name}}</a></div>
+          <div><a href="/forums/category/{{category._id}}/{{category.slug}}" class="forums-cat-text">{{category.name}}</a></div>
           <p class="forums-cat-desc-text">{{category.desc}}</p>
         </td>
 
@@ -79,7 +83,7 @@ You have 0 categories. <a class="btn btn-primary button" href="/admin/forums/cat
           <span class="last-active">
             {%if category.lastActiveTopic%}
 
-            <a href="/forums/topic?_id={{category.lastActiveTopic._id}}">
+            <a href="/forums/topic/{{category.lastActiveTopic._id}}">
               {{category.lastActiveTopic.title.substr(0, 40)}}{%if category.lastActiveTopic.title.length > 40%}...{%endif%}
             </a>
              
