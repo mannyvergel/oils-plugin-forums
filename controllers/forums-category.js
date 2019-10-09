@@ -5,6 +5,7 @@ const path = require('path');
 const Category = web.models('ForumsCategory');
 const Topic = web.models('ForumsTopic');
 const dateUtils = require('../lib/dateUtils.js');
+const commonFuncs = require('../lib/commonFuncs.js');
 
 module.exports = {
   get: async function(req, res) {
@@ -14,6 +15,10 @@ module.exports = {
 
     if (!category) {
       throw new Error("Category not found.");
+    }
+
+    if (!(commonFuncs.validateCategoryAccessLevel(category.accessLevel, req, res))) {
+      return;
     }
     
     const paramsSlug = req.params.SLUG;
@@ -27,8 +32,8 @@ module.exports = {
 		  sort: {updateDt: -1},
       noRecordsFoundLabel: 'No posts yet.',
       tableTemplate: path.join(pluginConf.pluginPath, '/conf/templates/forums-table-template.html'),
-		  columns: ['title', 'activeUsers', 'viewCount', 'activity'],
-		  labels: ['', 'Users', 'Views', 'Activity'],
+		  columns: ['title', 'replyCount', 'activeUsers', 'viewCount', 'activity'],
+		  labels: ['', 'Replies', 'Users', 'Views', 'Activity'],
       handlers: {
         title: function(record, column, escapedVal, callback) {
           callback(null, '<a class="topic-title" href="/forums/topic/' + record._id + '/' + record.titleSlug + '">' + escapedVal + '</a>');

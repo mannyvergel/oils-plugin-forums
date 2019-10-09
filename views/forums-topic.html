@@ -11,12 +11,14 @@
 
 {% block content %}
 
-<ul class="breadcrumbs">
+<ul class="breadcrumbs forums-breadcrumbs">
   <li><a href="/forums/tab/categories">Categories</a></li>
   <li><a href="/forums/category/{{topic.category._id}}">{{topic.category.name}}</a></li>
   
-  <li class="current"><a href="#">{{topic.title}}</a></li>
+  <li class="current"><a href="#">{{topic.title.substr(0, 50)}}{%if topic.title.length > 50%}...{%endif%}</a></li>
 </ul>
+
+<h1>{{topic.title}}</h1>
 
 
 {{table | safe}}

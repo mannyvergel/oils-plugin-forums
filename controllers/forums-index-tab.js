@@ -108,12 +108,13 @@ async function getTable({req, query, sort}) {
       sort: sort,
       noRecordsFoundLabel: 'No posts yet.',
       tableTemplate: path.join(pluginConf.pluginPath, '/conf/templates/forums-table-template.html'),
-      columns: ['title', 'activeUsers', 'viewCount', 'activity'],
-      labels: ['', 'Users', 'Views', 'Activity'],
+      columns: ['title', 'replyCount', 'activeUsers', 'viewCount', 'activity'],
+      labels: ['', 'Replies', 'Users', 'Views', 'Activity'],
       handlers: {
         title: function(record, column, escapedVal, callback) {
           callback(null, '<a class="topic-title" href="/forums/topic/' + record._id + '/' + record.titleSlug + '">' + escapedVal + '</a>');
         },
+
         activeUsers: function(record, column, escapedVal, callback) {
           let str = "";
           if (record.activeUsers && record.activeUsers.length > 0) {

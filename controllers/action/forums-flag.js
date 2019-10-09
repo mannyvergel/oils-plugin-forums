@@ -27,9 +27,9 @@ module.exports = {
         return;
       }
     }
-
-    post.flags.push({flag: flag, flaggedBy: user._id});
-    post.isFlagged = true;
+    const dtNow = new Date();
+    post.flags.push({flag: flag, flaggedBy: user._id, flagDt: dtNow});
+    post.lastFlagDt = dtNow;
 
     await post.save();
 

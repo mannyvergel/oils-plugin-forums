@@ -62,6 +62,7 @@ module.exports = async function(pluginConf, web, done) {
       { text: 'Categories', link:'/admin/forums/categories'},
       { text: 'All Posts', link:'/admin/dbedit/list?model=ForumsPost&sort=%7B%22createDt%22%3A-1%7D&displayName=All%20Posts'},
       { text: 'Pending Posts', link:'/admin/dbedit/list?model=ForumsPost&filter=%7B%22status%22%3A%22P%22%7D&displayName=Pending%20Posts'},
+      { text: 'Flagged Posts', link:'/admin/dbedit/list?model=ForumsPost&filter=%7B%22lastFlagDt%22%3A%7B%22%24ne%22%3Anull%7D%7D&displayName=Flagged+Posts&sort=%7B%22lastFlagDt%22%3A+-1%7D'},
     ]
   })
 
@@ -93,11 +94,14 @@ async function forumUserProfileMiddleware(req, res, next) {
   //remove req user forums profile if user is logged out
   if (!req.user && req.forumsUserProfile) {
     req.forumsUserProfile = null;
+  } else if (req.user) {
+    req.forumsUserProfile = req.session.forumsUserProfile;
   }
 
   //remove req user profile from cache if different user
-  if (req.user && req.forumsUserProfile && !req.user._id.equals(forumsUserProfile.user)) {
+  if (req.user && req.forumsUserProfile && !req.user._id.equals(req.forumsUserProfile.user)) {
     req.forumsUserProfile = null;
+    console.warn("Different user profile, this shouldn't happen!");
   }
 
   //if forums profile doesn't exist and logged in
@@ -121,6 +125,7 @@ async function forumUserProfileMiddleware(req, res, next) {
       forumsUserProfile = forumsUserProfile.toObject();
     }
 
+    req.session.forumsUserProfile = forumsUserProfile;
     req.forumsUserProfile = forumsUserProfile;
 
     //console.log('!!!!!!', req.forumsUserProfile);

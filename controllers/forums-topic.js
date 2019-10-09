@@ -8,6 +8,7 @@ const path = require('path');
 const forumUtils = web.plugins['oils-plugin-forums'].utils
 const forumConstants = web.plugins['oils-plugin-forums'].constants;
 const marked = web.require('marked');
+const commonFuncs = require('../lib/commonFuncs.js');
 
 module.exports = {
   get: async function(req, res) {
@@ -23,6 +24,10 @@ module.exports = {
     if (!topic) {
       //TODO: improve
       res.status(404).send("Topic not found");
+      return;
+    }
+
+    if (!(commonFuncs.validateCategoryAccessLevel(topic.category.accessLevel, req, res))) {
       return;
     }
 
@@ -72,7 +77,7 @@ module.exports = {
 
           <div class="header-sep"></div> 
 
-          <div class="row header-topic">
+          <div class="header-topic">
              <div class="small-8 columns post-left-container">by ${userStr} ${dateModStr}</div>
              <div class="small-4 columns post-opts-container">
                <div class="edit-post"><a href="#" onclick="showPopup(this); return false;"><i class="fa fa-gear"></i></a></div>

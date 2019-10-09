@@ -77,6 +77,7 @@ module.exports = {
     await post.save();
 
     Topic.addActiveUser(topic._id, req.user);
+    Topic.updateReplyCount(topic._id);
 
     const subsTopicId = "topic_" + topicIdStr;
 

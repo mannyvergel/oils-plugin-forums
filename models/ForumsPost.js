@@ -6,7 +6,7 @@ const Schema = mongoose.Schema,
 
 module.exports = {
   schema: {
-    msg: {type: String, required: true},
+    msg: {type: String, required: true, trim: true},
     flags: [{type: String}], //e.g. for flagging as inappropriate
     user: {type: ObjectId, ref: 'User', required: true},
     topic: {type: ObjectId, ref: 'ForumsTopic', required: true},
@@ -23,8 +23,8 @@ module.exports = {
 
     isEdited: {type: String},
 
-    flagged: {type: String, index: true}, //Y / null
-    flags: [{flag: String, flaggedBy: ObjectId}],
+    lastFlagDt: {type: Date},
+    flags: [{flag: String, flaggedBy: ObjectId, flagDt: Date}],
 
     updateDt: {type: Date, default: Date.now},
     updateBy: {type: String, default: 'SYSTEM'},
@@ -36,6 +36,8 @@ module.exports = {
     mySchema.index({topic: 1, status: 1});
 
     mySchema.index({createDt: -1});
+
+    mySchema.index({lastFlagDt: -1});
 
     mySchema.pre('save', function(next) {
         //workaround for determining inserts
