@@ -1,3 +1,5 @@
+'use strict';
+
 const Topic = web.models('ForumsTopic');
 const Post = web.models('ForumsPost');
 
@@ -32,6 +34,8 @@ module.exports = {
     post.lastFlagDt = dtNow;
 
     await post.save();
+
+    console.log("Flagged as", flag, post, req.user._id, req.user.nickname);
 
     req.flash('info', 'You have successfully flagged the post');
     res.redirect('/forums/topic/' + post.topic);

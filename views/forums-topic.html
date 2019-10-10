@@ -21,6 +21,10 @@
 <h1>{{topic.title}}</h1>
 
 
+{% set _addSubscribe = true %}
+{% include "./inc/share-btns-row.html" %}
+
+
 {{table | safe}}
 
 <a href="/forums/reply?topic={{topic._id.toString()}}" class="button btn btn-primary small alert">Reply</a>
@@ -81,6 +85,32 @@
     // setTimeout(function() {
     //   hideOnClickOutside(mypopup);
     // }, 0)
+  }
+
+  function forumsPostLike(postId) {
+    var postLikesObj = $("#POST_LIKES_" + postId);
+    var likedData = postLikesObj.data('liked');
+    $.getJSON( "/forums/action/post-like?postId=" + encodeURIComponent(postId) 
+      + '&unlike=' + likedData, function( respJson ) {
+      if (respJson) {
+        if (likedData === 'Y') {
+          postLikesObj.data('liked', 'N');
+        } else {
+          postLikesObj.data('liked', 'Y');
+        }
+
+        if (respJson.data.likeCount == 0) {
+          postLikesObj.removeClass('likes-active');
+          $('#LIKE_COUNTER_' + postId).addClass('be-the-first').text('{{beTheFirstStr}}');
+        } else {
+          postLikesObj.addClass('likes-active');
+          $('#LIKE_COUNTER_' + postId).removeClass('be-the-first').text(respJson.data.likeCount.toString())  
+        }
+        
+      }
+      //alert(JSON.stringify(data));
+
+    });
   }
 
   function hideOnClickOutside(element) {

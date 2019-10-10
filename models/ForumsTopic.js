@@ -30,10 +30,13 @@ module.exports = {
       schema.statics.incrementViewCount = commonFuncs.incrementViewCount;
       schema.statics.addActiveUser = commonFuncs.addActiveUser;
 
+
+      schema.index({createDt: -1});
+
       schema.statics.updateReplyCount = async function(topicId) {
         const Post = web.models('ForumsPost');
         const replyCount = await Post.count({topic: topicId});
-        await this.findOneAndUpdate({_id: topicId}, { $set: { replyCount: replyCount }});
+        await this.updateOne({_id: topicId}, { $set: { replyCount: replyCount }});
         return replyCount;
       }
 
@@ -46,10 +49,23 @@ module.exports = {
         next();
       })
 
-      schema.pre('save', function (next) {
+      schema.pre('save', async function (next) {
         this.wasNew = this.isNew;
 
-        next();
+        const self = this;
+        const isInsert = self.isNew;
+
+        const lastTopicArr = await self.constructor.find({}).limit(1).sort({createDt:-1}).lean().exec();
+
+        if (isInsert) {
+            if (lastTopicArr && lastTopicArr.length === 1
+                && lastTopicArr[0].createBy == self.createBy
+                && lastTopicArr[0].title === self.title
+                && lastTopicArr[0].category.equals(self.category)) {
+                throw new Error("This was already posted.");
+            }
+        }
+
       });
 
       schema.post('save', function () {

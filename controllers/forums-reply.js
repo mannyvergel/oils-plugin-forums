@@ -16,7 +16,7 @@ module.exports = {
 		let post = {};
 		if (queryPostId) {
 			post = await Post.findOne({_id: queryPostId}).lean().populate('topic').exec();
-      if (!req.user._id.equals(post.createBy)) {
+      if (!req.user._id.equals(post.user)) {
         throw new Error("Topic not found.. invalid request.");
       }
 		}
@@ -56,6 +56,9 @@ module.exports = {
       post = await Post.findOne({_id: req.body._id});
       if (!post) {
         throw new Error("Post not found.");
+      }
+      if (!req.user._id.equals(post.user)) {
+        throw new Error("Topic not found.. invalid request.");
       }
       post.isEdited = "Y";
     } else {

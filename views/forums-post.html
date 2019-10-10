@@ -50,6 +50,7 @@ label {
 <input type="hidden" name="_csrf" value="{{_csrf}}" />
 {%if topic._id%}
 <h1>Update Topic</h1>
+<input type="hidden" name="_id" value="{{topic._id}}" />
 {%else%}
 <h1>New Topic</h1>
 {%endif%}
@@ -113,7 +114,7 @@ label {
 
 {% block beforeEndBody %}
 <script>
-  var simplemde = new SimpleMDE({ element: document.getElementById("TXT_MSG") });
+  var simplemde = new SimpleMDE({ element: document.getElementById("TXT_MSG"), spellChecker: false });
 </script>
 
 <script src="//twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>

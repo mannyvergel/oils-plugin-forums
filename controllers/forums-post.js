@@ -16,8 +16,17 @@ module.exports = {
 
     let post = await Post.findOne({_id: queryPostId}).populate('topic').lean().exec();
 
+    if (queryPostId && !post) {
+      throw new Error("Invalid request [p8]")
+    }
+
     let topic = null;
     if (post) {
+      if (!req.user._id.equals(post.user)) {
+        console.error("Someone attempted to edit a post that's not them", req.user, post)
+        throw new Error("Invalid request [5]");
+      }
+
       topic = post.topic;
     }
 
@@ -29,13 +38,33 @@ module.exports = {
 
   post: [web.auth.loginUtils.handleLogin, async function(req, res) {
 
-    //TODO: checker for double posts
+    const params = req.body;
+    const queryPostId = req.query._id;
+    const isCreateMode = !queryPostId;
+    let post, topic;
 
-    let topic = new Topic();
+    if (queryPostId) {
+      post = await Post.findOne({_id: queryPostId}).populate('topic').exec();
+      if (!req.user._id.equals(post.user)) {
+        console.error("Someone attempted to edit a post that's not them", req.user, post)
+        throw new Error("Invalid request [5]");
+      }
+      post.isEdited = 'Y';
+
+      topic = post.topic;
+    } else {
+      post = new Post();
+      topic = new Topic();
+      topic.createBy = req.user._id;
+      post.createBy = req.user._id;
+    }
+    
+
     topic.title = req.body.title || "";
     topic.title = topic.title.trim();
 
-    let post = new Post();
+    post.isFirst = 'Y';
+
     post.topic = topic._id;
     post.msg = req.body.msg || "";
     post.msg = post.msg.trim();
@@ -50,6 +79,10 @@ module.exports = {
 
       if (topic.title.length > 80) {
         throw new Error("Title is too long. Please limit to 80 characters.")
+      }
+
+      if (web.stringUtils.isEmpty(post.msg)) {
+        throw new Error("Message is required.");
       }
 
       topic.category = category;
@@ -74,21 +107,13 @@ module.exports = {
 
       topic.tags = tags;
 
-      topic.createBy = req.user._id;
       topic.updateBy = req.user._id;
       topic.updateDt = new Date();
 
       await topic.save();
 
 
-      if (web.stringUtils.isEmpty(post.msg)) {
-        throw new Error("Message is required.");
-      }
-
       post.user = req.user._id;
-
-
-      post.createBy = req.user._id;
       post.updateBy = req.user._id;
       post.updateDt = new Date();
 
@@ -98,12 +123,17 @@ module.exports = {
 
       // web.subs.subscribe('topic_' + post.topic, req.user._id);
 
-      req.flash('info', 'Message posted');
+      req.flash('info', 'Topic posted');
       res.redirect('/forums/topic/' + topic._id + '/' + topic.titleSlug);
     } catch (ex) {
       console.error(ex);
       req.flash('error', ex.message);
-      topic._id = null;
+
+      if (isCreateMode) {
+        topic._id = null;
+        post._id = null;
+      }
+      
       renderForumsPost(req, res, post, topic, category);
     }
 

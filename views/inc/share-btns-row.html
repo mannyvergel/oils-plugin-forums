@@ -1,0 +1,23 @@
+<div class="share-row">
+  <!-- AddToAny BEGIN -->
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+
+    {% if _addSubscribe %}
+    
+    {% if not _subscribed %}
+    <a title="Subscribe" class="frms-subscribe"><i class="fa fa-bell"></i></a>
+    {% else %}
+    <a title="Unsubscribe" class="frms-subscribe"><i class="fa fa-bell-slash-o"></i></a>
+    {% endif %}
+    {#
+    <div class="frms-sep"></div>
+    #}
+    {% endif %}
+    <a title="Share on Facebook" class="a2a_button_facebook"></a>
+    <a title="Share on Twitter" class="a2a_button_twitter"></a>
+    <a title="Share via Email" class="a2a_button_email"></a>
+    <a title="More" class="a2a_dd" href="https://www.addtoany.com/share"></a>
+  </div>
+  <script async src="https://static.addtoany.com/menu/page.js"></script>
+  <!-- AddToAny END -->
+</div>

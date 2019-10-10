@@ -14,20 +14,20 @@
 }
 
 .forums-cat-icon.news {
-  font-size: 12px;
+  font-size: 0.857em;
 }
 
 .forums-cat-text {
   font-weight: bold;
   color: #006FFF;
-  font-size: 17px;
+  font-size: 1.214em;
 }
 
 .forums-cat-desc-text {
   margin-top: 3px;
   margin-bottom: 0;
   color: #666;
-  font-size: 14px;
+  font-size: 1em;
   line-height: 17px;
 }
 
@@ -35,15 +35,11 @@
   margin-bottom: 0;
 }
 
-.post-opts-container .mypopup {
-  display: none;
-}
-
 .post-opts-container .edit-post {
   text-align: right;
 }
 .post-opts-container .edit-post a {
-  font-size: 15px;
+  font-size: 1.071em;
   color: #71bbdd;
 }
 
@@ -51,7 +47,8 @@
   color: #008CBA;
 }
 
-.post-opts-container .mypopup a {
+
+.mypopup a {
   background: white;
   border: 1px solid #008BBF;
   padding: 3px 5px;
@@ -59,27 +56,31 @@
   height: 26px;
   text-align: left;
   border-radius: 3px;
+  font-size: 0.875em;
 }
 
-.post-opts-container .mypopup {
+.mypopup {
+  display: none;
   position: absolute;
   background: #008BBF;
   border-radius: 3px;
   padding: 7px;
 }
 
-.post-left-container {
-  padding: 0;
-}
-
-.post-opts-container .mypopup a:hover {
+.mypopup a:hover {
   color: white;
   background-color: #008BBF;
   border-color: white;
 }
 
+.post-left-container {
+  padding: 0;
+}
+
+
 .emoji {
   height: 19px;
+  margin-right: 2px;
 }
 
 .forums {
@@ -136,7 +137,7 @@
 }
 
 .forums-cat .topic-title {
-  font-size: 18px;
+  font-size: 1.286em;
 }
 
 .forums-cat table thead tr td {
@@ -190,7 +191,7 @@
   border: 0;
   background-color: #fff;
   padding-bottom: 50px;
-  padding-top: 0;
+  padding-top: 20px;
 }
 
 .forums-topic tr td {
@@ -248,6 +249,25 @@ table.forums-topic td:last-child {
   border-bottom: 1px solid #eee;
 }
 
+.a2a_default_style a.frms-subscribe {
+  width: 32px; 
+  height: 32px;
+  background: salmon;
+  color: white;
+  border-radius: 5px;
+  font-size: 19px;
+  padding: 7px 7px; 
+  margin-right: 2px;
+}
+
+.frms-sep {
+  border-left: 1px solid #ccc;
+  margin: 0 12px;
+  width: 1px;
+  height: 32px; 
+  float: left;
+}
+
 /*.forums-breadcrumbs {
   overflow: hidden;
   padding-left: 0;
@@ -255,6 +275,33 @@ table.forums-topic td:last-child {
   background-color: white;
   border-color: white;
 }*/
+
+.frms-likes-ct a {
+  font-size: 1.2em;
+}
+
+.frms-likes-ct a span.be-the-first {
+  font-size: 0.8em;
+}
+
+.frms-likes-ct a i {
+  font-size: 1.5em;
+}
+
+.frms-likes-ct a {
+  color: #71bbdd;
+  display: block;
+  width: 130px;
+  height: 32px;
+}
+
+.frms-likes-ct.likes-active a {
+  color: #008CBA;
+}
+
+.frms-likes-ct a:hover {
+  color: #008CBA;
+}
 
 
 @media only screen and (max-width: 800px) {

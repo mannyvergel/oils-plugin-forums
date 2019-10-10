@@ -7,9 +7,10 @@ const Schema = mongoose.Schema,
 module.exports = {
   schema: {
     msg: {type: String, required: true, trim: true},
-    flags: [{type: String}], //e.g. for flagging as inappropriate
     user: {type: ObjectId, ref: 'User', required: true},
     topic: {type: ObjectId, ref: 'ForumsTopic', required: true},
+
+    isFirst: {type: String}, // Y to indicate that it's the first (most likely from the author)
 
     //not indexed as of writing since it's not needed to be retrieved separately
     status: {type: String, required: true, default: 'A'}, //[A]ctive, [X]Deleted
@@ -20,6 +21,8 @@ module.exports = {
         diff: [],
         createDt:{type: Date}
     }],
+
+    postLikeEmoji: {type: ObjectId, ref: 'ForumsPostLikeEmoji'},
 
     isEdited: {type: String},
 
@@ -39,30 +42,57 @@ module.exports = {
 
     mySchema.index({lastFlagDt: -1});
 
-    mySchema.pre('save', function(next) {
+    mySchema.pre('save', async function() {
         //workaround for determining inserts
         this.wasNew = this.isNew;
-        next();
+        const self = this;
+        const isInsert = self.isNew;
+
+        const lastPostArr = await self.constructor.find({topic: self.topic}).limit(1).sort({createDt:-1}).lean().exec();
+
+        if (isInsert) {
+            if (lastPostArr && lastPostArr.length === 1
+                && lastPostArr[0].user.equals(self.user)
+                && lastPostArr[0].msg === self.msg) {
+                throw new Error("This was already posted.");
+            }
+        }
+
+        // in the future if you want to support non first posts likes
+        // remove the isFirst condition
+        if (this.isFirst === 'Y' && !this.postLikeEmoji) {
+            const PostLikeEmoji = web.models('ForumsPostLikeEmoji');
+            let myPostLikeEmoji = null; // await PostLikeEmoji.findOne({post: this._id}).lean().exec();
+            if (!myPostLikeEmoji) {
+                myPostLikeEmoji = new PostLikeEmoji();
+                myPostLikeEmoji.post = this._id;
+                await myPostLikeEmoji.save();
+            }
+
+            this.postLikeEmoji = myPostLikeEmoji._id;
+        }
+        
     })
 
-    mySchema.post('save', function() {
-        let isInsert = this.wasNew;
+    mySchema.post('save', async function() {
+        const isInsert = this.wasNew;
         console.debug("[ForumsPost-postSave] isInsert:", isInsert);
 
         if (isInsert) {
             let Topic = web.models('ForumsTopic');
-            let self = this;
+            const self = this;
 
-            Topic.findOne({_id: this.topic}, function(err, topic) {
-                if (!topic) {
-                    console.error("[ForumsPost-postSave] Topic not found.");
-                    return;
-                }
+            const topic = await Topic.findOne({_id: this.topic});
 
-                topic.lastPost = self;
-                topic.save();
-            })
+            if (!topic) {
+                console.error("[ForumsPost-postSave] Topic not found.");
+                return;
+            }
+
+            topic.lastPost = self;
+            await topic.save();
         }
+
     });
 
     mySchema.post('remove', function() {

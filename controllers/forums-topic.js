@@ -3,12 +3,15 @@
 const pluginConf = web.plugins['oils-plugin-forums'].conf;
 const Topic = web.models('ForumsTopic');
 const Post = web.models('ForumsPost');
+const PostLikeEmoji = web.models('ForumsPostLikeEmoji');
 
 const path = require('path');
 const forumUtils = web.plugins['oils-plugin-forums'].utils
 const forumConstants = web.plugins['oils-plugin-forums'].constants;
 const marked = web.require('marked');
 const commonFuncs = require('../lib/commonFuncs.js');
+
+const beTheFirstStr = 'Be the first to like';
 
 module.exports = {
   get: async function(req, res) {
@@ -41,39 +44,81 @@ module.exports = {
       sort: {createDt: 1},
       columns: ['msg'],
       labels: ['Message'],
-      populate: 'user',
+      populate: ['user', 'postLikeEmoji'],
       addtlTableClass: "forums-topic",
       handlers: {
         msg: function(record, column, escapedVal, callback) {
+          const post = record;
+          post.postLikeEmoji = post.postLikeEmoji || {}
+
 
           let userStr = "";
-          if (record.user) {
-             userStr = record.user.nickname || record.user.username;
+          if (post.user) {
+             userStr = post.user.nickname || post.user.username;
           }
 
           userStr = web.stringUtils.escapeHTML(userStr);
 
-          let markedMsg = marked(record.msg);
+          let markedMsg = marked(post.msg);
 
-          let dateStr = web.dateUtils.formatReadableDateTime(record.updateDt);
+          let dateStr = web.dateUtils.formatReadableDateTime(post.updateDt);
           let dateModStr = dateStr;
-          if (record.isEdited == "Y") {
+          if (post.isEdited == "Y") {
             dateModStr += " (Edited)";
           }
 
           let editStrArr = [];
 
-          if (req.user && record.user && req.user._id.equals(record.user._id)) {
-            editStrArr.push('<a href="/forums/reply?topic=' 
-              + queryTopicId + '&_id=' 
-              + record._id + '" title="Edit"><i class="fa fa-pencil" style=""></i> Edit</a>');
+          if (req.user && post.user && req.user._id.equals(post.user._id)) {
+            if (post.isFirst === 'Y') {
+              editStrArr.push('<a href="/forums/post?_id=' 
+                + post._id + '" title="Edit"><i class="fa fa-pencil" style=""></i> Edit</a>');
+            } else {
+              editStrArr.push('<a href="/forums/reply?topic=' 
+                + queryTopicId + '&_id=' 
+                + post._id + '" title="Edit"><i class="fa fa-pencil" style=""></i> Edit</a>');  
+              
+            }
+            
           }
 
-          editStrArr.push(`<a href="/forums/action/flag?postId=${record._id.toString()}&flag=i" onclick="return confirm(\'Are you sure you want to flag this post?\')" title="Flag"><i class="fa fa-flag"></i> Flag as Inappropriate</a>`);
+          const postIdStr = post._id.toString();
+
+          let likeRow = "";
+          if (post.isFirst === 'Y') {
+            if (true) {
+              //TODO: subscribed
+              editStrArr.push(`<a href="#" title="Subscribe"><i class="fa fa-bell"></i> Subscribe</a>`);
+            } else {
+              editStrArr.push(`<a href="#" title="Unsubscribe"><i class="fa fa-bell-slash-o"></i> Unsubscribe</a>`);
+            }
+
+            let likeCountStr;
+            let addtlFrmsLikeClass = "";
+            if (post.postLikeEmoji.likeCount > 0) {
+              likeCountStr = `<span id="LIKE_COUNTER_${postIdStr}" class="counter">${post.postLikeEmoji.likeCount}</span>`;
+              addtlFrmsLikeClass = " likes-active";
+            } else {
+              likeCountStr = `<span id="LIKE_COUNTER_${postIdStr}" class="counter be-the-first">${beTheFirstStr}</span>`;
+            }
+
+            let dataLiked = "N";
+            if (post.postLikeEmoji.likeUserMap && post.postLikeEmoji.likeUserMap[req.user._id]) {
+              dataLiked = "Y";
+            }
+
+            likeRow = `<div id="POST_LIKES_${postIdStr}" class="frms-likes-ct${addtlFrmsLikeClass}" data-liked="${dataLiked}">
+                        <a href="#" onclick="forumsPostLike('${postIdStr}'); return false;"><i class="fa fa-thumbs-o-up"></i> ${likeCountStr}</a> 
+                      </div>`
+          }
+
+          editStrArr.push(`<a href="/forums/action/flag?postId=${postIdStr}&flag=i" onclick="return confirm(\'Are you sure you want to flag this post?\')" title="Flag"><i class="fa fa-flag"></i> Flag as Inappropriate</a>`);
 
           let contentStr = 
           `
           ${markedMsg}
+
+          ${likeRow}
 
           <div class="header-sep"></div> 
 
@@ -97,7 +142,9 @@ module.exports = {
 		res.renderFile(path.join(pluginConf.viewsDir, 'forums-topic.html'), 
       {table: table, 
         topic: topic, 
-        pluginConf: pluginConf
+        pluginConf: pluginConf,
+        beTheFirstStr: beTheFirstStr,
+        _subscribed: false,
       });
 
     forumUtils.incrementViewCountForTopic(req, topic);

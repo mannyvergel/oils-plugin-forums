@@ -43,6 +43,7 @@ module.exports = {
 
 
   '/forums/action/flag': web.include(path.join(controllersDir, 'action', 'forums-flag.js')),
+  '/forums/action/post-like': web.include(path.join(controllersDir, 'action', 'forums-post-like.js')),
 
 }
 
