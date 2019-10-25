@@ -187,11 +187,11 @@
   
 }
 
-.forums-topic tr:first-child td {
+.forums-topic tr.first-ever td {
   border: 0;
   background-color: #fff;
   padding-bottom: 50px;
-  padding-top: 20px;
+  padding-top: 0;
 }
 
 .forums-topic tr td {
@@ -301,6 +301,11 @@ table.forums-topic td:last-child {
 
 .frms-likes-ct a:hover {
   color: #008CBA;
+}
+
+.share-row {
+  height: 32px;
+  margin-bottom: 20px;
 }
 
 

@@ -38,7 +38,7 @@ module.exports = {
 
 async function handleGetLatest(req, res, tabMap, selectedTab, addtlRenderParams) {
 
-  let table = await getTable({req, query:{status:'A'}, sort:{createDt: -1}});
+  let table = await getTable({req, query:{status:'A'}, sort:{'lastPost.createDt': -1}});
 
   const renderParams = {};
   Object.assign(renderParams,

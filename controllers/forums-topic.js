@@ -44,6 +44,7 @@ module.exports = {
       sort: {createDt: 1},
       columns: ['msg'],
       labels: ['Message'],
+      tableTemplate: path.join(pluginConf.pluginPath, '/conf/templates/forums-table-template.html'),
       populate: ['user', 'postLikeEmoji'],
       addtlTableClass: "forums-topic",
       handlers: {
@@ -139,13 +140,13 @@ module.exports = {
       },
     });
 
-		res.renderFile(path.join(pluginConf.viewsDir, 'forums-topic.html'), 
-      {table: table, 
-        topic: topic, 
-        pluginConf: pluginConf,
-        beTheFirstStr: beTheFirstStr,
-        _subscribed: false,
-      });
+		res.renderFile(path.join(pluginConf.viewsDir, 'forums-topic.html'), {
+      table: table, 
+      topic: topic, 
+      pluginConf: pluginConf,
+      beTheFirstStr: beTheFirstStr,
+      _subscribed: false,
+    });
 
     forumUtils.incrementViewCountForTopic(req, topic);
 

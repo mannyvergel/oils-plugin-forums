@@ -87,15 +87,7 @@ module.exports = {
     // web.subs.subscribe(subsTopicId, req.user._id);
 
     req.flash('info', 'Reply posted');
-    res.redirect('/forums/topic/' + topicIdStr + '/' + topic.titleSlug);
-
-
-    try {
-
-      
-    } catch (ex) {
-      console.error("Error sending email", ex);
-    }
+    res.redirect('/forums/topic/' + topicIdStr + '/' + topic.titleSlug + '?forumspost_p=last#lastPost');
 
   }]
 }

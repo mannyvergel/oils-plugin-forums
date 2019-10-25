@@ -32,6 +32,7 @@ module.exports = {
 
 
       schema.index({createDt: -1});
+      schema.index({'lastPost.createDt': -1});
 
       schema.statics.updateReplyCount = async function(topicId) {
         const Post = web.models('ForumsPost');
