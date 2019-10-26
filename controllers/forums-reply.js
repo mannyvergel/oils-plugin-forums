@@ -82,6 +82,8 @@ module.exports = {
     Topic.addActiveUser(topic._id, req.user);
     Topic.updateReplyCount(topic._id);
 
+    afterPosting(post);
+
     const subsTopicId = "topic_" + topicIdStr;
 
     // web.subs.subscribe(subsTopicId, req.user._id);
@@ -93,20 +95,24 @@ module.exports = {
 }
 
 
-async function afterPosting() {
+async function afterPosting(post) {
   const userIds = Array.from(await web.subs.getSubscribers(post.topic));
   userIds.splice(users.indexOf(post.user), 1);
   const emails = userUtils.getEmailsFromUserIds(userIds);
 
   if (emails.length > 0) {
-    web.mailingListUtils.email({
+    web.huhumails.email({
       conf: {
         sendEmailListId: subsTopicId,
       },
 
       to: emails,
-      subj: 'Someone posted a message - Pesobility Forums',
-      body: `Hu
+      subj: 'New Reply - Pesobility Forums',
+      body: `Hi,
+
+A new reply has been posted.
+
+
 `
     });  
   }

@@ -4,11 +4,57 @@
 
     {% if _addSubscribe %}
     
+    <a class="frms-subscribe" onclick="onClickSubscribe(); return false;" href="#" id="SUBS_LINK_BTN"></a>
+    <script>
+      function handleSubscribeBtn() {
+        var oSubsBtn = $('#SUBS_LINK_BTN');
+        $.getJSON( "/forums/action/is-subscribed?listId={{_addSubscribeListId}}", function( returnObj ) {
+          changeSubscribeBtn(returnObj.data.isSubscribed == 'Y');
+        });
+      }
+
+      function changeSubscribeBtn(toUnsubscribe) {
+        var oSubsBtn = $('#SUBS_LINK_BTN'); 
+        if (toUnsubscribe) {
+            oSubsBtn.attr('title', 'Unsubscribe');
+            oSubsBtn.html('<i class="fa fa-bell-slash-o"></i>');
+          } else {
+            oSubsBtn.attr('title', 'Subscribe');
+            oSubsBtn.html('<i class="fa fa-bell"></i>');
+          }
+      }
+
+      function onClickSubscribe() {
+        var oSubsBtn = $('#SUBS_LINK_BTN');
+        var btnTitle = oSubsBtn.attr('title');
+        if (btnTitle == 'Subscribe') {
+
+          changeSubscribeBtn(true);
+          $.getJSON( "/forums/action/unsubscribe?listId={{_addSubscribeListId}}", function( returnObj ) {
+            // TODO: transfer delay button here
+          });
+        } else if (btnTitle == 'Unsubscribe') {
+          changeSubscribeBtn(false);
+          $.getJSON( "/forums/action/subscribe?listId={{_addSubscribeListId}}", function( returnObj ) {
+            // TODO: transfer delay button here
+          });
+        } else {
+          alert("Not supported title" + oSubsBtn.title);
+        }
+      }
+
+      handleSubscribeBtn();
+    </script>
+
+    {#
     {% if not _subscribed %}
     <a title="Subscribe" class="frms-subscribe"><i class="fa fa-bell"></i></a>
     {% else %}
     <a title="Unsubscribe" class="frms-subscribe"><i class="fa fa-bell-slash-o"></i></a>
     {% endif %}
+    #}
+
+
     {#
     <div class="frms-sep"></div>
     #}

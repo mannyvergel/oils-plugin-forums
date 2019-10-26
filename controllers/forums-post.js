@@ -123,8 +123,25 @@ module.exports = {
 
       // web.subs.subscribe('topic_' + post.topic, req.user._id);
 
+      try {
+        const listId = 'peso_topic_' + post.topic;
+        await web.huhumails.ensureMailingList({
+          listId,
+          listDesc: 'Pesobility Topic ' + topic.title
+        });
+
+        await web.huhumails.subscribe({
+          listIds: [listId],
+          emails: [req.user.email],
+        })
+      } catch (ex) {
+        console.error("Error in mailing list", ex);
+      }
+
       req.flash('info', 'Topic posted');
       res.redirect('/forums/topic/' + topic._id + '/' + topic.titleSlug);
+
+
     } catch (ex) {
       console.error(ex);
       req.flash('error', ex.message);
