@@ -15,5 +15,6 @@ module.exports = {
 
     res.status(200).json({status: 200});
 
+    console.log("Unsubscribed", email, listId);
   }]
 }

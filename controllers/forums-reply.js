@@ -82,7 +82,7 @@ module.exports = {
     Topic.addActiveUser(topic._id, req.user);
     Topic.updateReplyCount(topic._id);
 
-    afterPosting(post);
+    afterPosting(post, topic, req);
 
     const subsTopicId = "topic_" + topicIdStr;
 
@@ -95,25 +95,35 @@ module.exports = {
 }
 
 
-async function afterPosting(post) {
-  const userIds = Array.from(await web.subs.getSubscribers(post.topic));
-  userIds.splice(users.indexOf(post.user), 1);
-  const emails = userUtils.getEmailsFromUserIds(userIds);
+async function afterPosting(post, topic, req) {
+  const pluginConf = web.plugins['oils-plugin-forums'].conf;
+  const forumTitle = req.defaultForum.name || "Forums";
+  const listId = 'peso_topic_' + post.topic;
 
-  if (emails.length > 0) {
-    web.huhumails.email({
-      conf: {
-        sendEmailListId: subsTopicId,
-      },
+  try {
+    await web.huhumails.subscribe({
+      listIds: [listId],
+      emails: [req.user.email],
+    })
 
-      to: emails,
-      subj: 'New Reply - Pesobility Forums',
+    await web.huhumails.emailToList({
+      listId: listId,
+      exclude: [req.user.email],
+      
+      subj: `New Reply for ${topic.title} - ${forumTitle}`,
       body: `Hi,
 
-A new reply has been posted.
+  A new reply has been posted for the topic <a href="${pluginConf.hostUrl}/forums/topic/${topic._id}/${topic.titleSlug}?forumspost_p=last#lastPost">${topic.title}.
 
+  Pesobility Forums
+  `,
+      conf: {
+        replaceNewLineWithBr: pluginConf.emailReplaceNewLineWithBr
+      },
+    })
 
-`
-    });  
+  } catch (ex) {
+    console.error("Error after reply subs", ex);
   }
+
 }

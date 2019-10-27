@@ -30,12 +30,13 @@
         if (btnTitle == 'Subscribe') {
 
           changeSubscribeBtn(true);
-          $.getJSON( "/forums/action/unsubscribe?listId={{_addSubscribeListId}}", function( returnObj ) {
+          $.getJSON( "/forums/action/subscribe?listId={{_addSubscribeListId}}", function( returnObj ) {
             // TODO: transfer delay button here
           });
         } else if (btnTitle == 'Unsubscribe') {
           changeSubscribeBtn(false);
-          $.getJSON( "/forums/action/subscribe?listId={{_addSubscribeListId}}", function( returnObj ) {
+          
+          $.getJSON( "/forums/action/unsubscribe?listId={{_addSubscribeListId}}", function( returnObj ) {
             // TODO: transfer delay button here
           });
         } else {
