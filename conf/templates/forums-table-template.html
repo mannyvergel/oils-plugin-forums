@@ -17,7 +17,7 @@
   <tr{%if loop.index == 1 and pagination.pageNo == 1%} class="first-ever"{%endif%}>
   {%set isLast = loop.last%}
   {%for col in table.columns%}
-  <td class="col{{loop.index}}">{%if loop.index == 1 and isLast%}<a name="lastRec"></a>{%endif%}{{record[col] | safe}}</td>
+  <td class="col{{loop.index}}">{%if loop.index == 1 and isLast%}<a name="lastPost"></a>{%endif%}{{record[col] | safe}}</td>
   {%endfor%}
   </tr>
   {%endfor%}

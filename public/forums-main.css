@@ -161,16 +161,17 @@
 .forums-cat tbody tr td.col2 {
   width: 50px;
 }
-
+/*
 .forums-cat tbody tr td.col3 {
   width: 120px;
 }
+*/
 
-.forums-cat tbody tr td.col4 {
+.forums-cat tbody tr td.col3 {
   width: 50px;
 }
 
-.forums-cat tbody tr td.col5 {
+.forums-cat tbody tr td.col4 {
   width: 90px;
 }
 
@@ -310,9 +311,9 @@ table.forums-topic td:last-child {
 
 
 @media only screen and (max-width: 800px) {
-  .forums-cat tr td.col3 {
+  /*.forums-cat tr td.col3 {
     display: none;
-  }
+  }*/
 
   .forums tr:first-child {
     display: none;

@@ -29,11 +29,11 @@ module.exports = {
     
 		let table = await web.renderTable(req, Topic, {
 		  query: {category: queryCatId},
-		  sort: {updateDt: -1},
+		  sort: {'lastPost.createDt': -1},
       noRecordsFoundLabel: 'No posts yet.',
       tableTemplate: path.join(pluginConf.pluginPath, '/conf/templates/forums-table-template.html'),
-		  columns: ['title', 'replyCount', 'activeUsers', 'viewCount', 'activity'],
-		  labels: ['', 'Replies', 'Users', 'Views', 'Activity'],
+		  columns: ['title', 'replyCount', 'viewCount', 'activity'],
+		  labels: ['', 'Replies', 'Views', 'Activity'],
       handlers: {
         title: function(record, column, escapedVal, callback) {
           callback(null, '<a class="topic-title" href="/forums/topic/' + record._id + '/' + record.titleSlug + '">' + escapedVal + '</a>');
@@ -41,14 +41,7 @@ module.exports = {
         activeUsers: function(record, column, escapedVal, callback) {
           let str = "";
           if (record.activeUsers && record.activeUsers.length > 0) {
-            let uLength = record.activeUsers.length;
-            for (let i=0; i<uLength; i++) {
-              let user = record.activeUsers[i];
-              str = str + " " + user.username;
-              if (uLength > 1) {
-                str += ",";
-              }
-            }
+            str = record.activeUsers.map(rec => rec.nickname).join(', ');
           }
           callback(null, str);
         },
@@ -59,7 +52,7 @@ module.exports = {
             activityStr = dateUtils.formatDateSince(record.lastPost.createDt);
           }
 
-          callback(null, activityStr);
+          callback(null, '<a title="Go to last page" href="/forums/topic/' + record._id + '/' + record.titleSlug + '?forumspost_p=last#lastPost">' + activityStr + '</a>');
         }
       }
 		});

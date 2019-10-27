@@ -14,7 +14,7 @@ module.exports = {
     tags: [{type: String}],
     replyCount: {type: Number, default: 0},
     viewCount: {type: Number, default: 0},
-    activeUsers: [{_id: {type: ObjectId}, username: {type: String}, avatar: {type: String}}],
+    activeUsers: [{_id: {type: ObjectId}, username: {type: String}, nickname: {type: String}, avatar: {type: String}}],
     lastPost: {_id:{type:ObjectId}, createBy:String, createDt: Date},
     status: {type: String, default: 'A', required: true, index: true}, //[A]ctive, [C]losed, X - Deleted
 
