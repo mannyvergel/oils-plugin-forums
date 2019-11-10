@@ -106,8 +106,8 @@ async function getTable({req, query, sort}) {
   let table = await web.renderTable(req, Topic, {
       query: query,
       sort: sort,
-      pageLimit: 1,
-      rowsPerPage: 20,
+      pageLimit: pluginConf.forumsIndexPageLimit,
+      rowsPerPage: pluginConf.forumsIndexRowsPerPage,
       noRecordsFoundLabel: 'No posts yet.',
       tableTemplate: path.join(pluginConf.pluginPath, '/conf/templates/forums-table-template.html'),
       columns: ['title', 'replyCount', 'viewCount', 'activity'],

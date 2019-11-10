@@ -8,15 +8,28 @@ module.exports = {
     const listId = reqParams.listId;
     const email = req.user.email;
     const r = reqParams.r;
+    const unsubscribe = reqParams.unsubscribe === "Y"
 
-    await web.huhumails.subscribe({
-      emails: [email],
-      listIds: [listId]
-    })
-
+    if (unsubscribe) {
+      await web.huhumails.unsubscribe({
+        emails: [email],
+        listIds: [listId]
+      })
+    } else {
+      await web.huhumails.subscribe({
+        emails: [email],
+        listIds: [listId]
+      })
+    }
+    
     console.log("Subscribed", email, listId);
 
-    req.flash('info', "Thanks for subscribing!");
+    if (unsubscribe) {
+      req.flash('info', "You have successfully unsubscribed!");
+    } else {
+      req.flash('info', "Thanks for subscribing!");
+    }
+    
 
     res.redirect(r);
 

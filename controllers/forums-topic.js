@@ -48,7 +48,7 @@ module.exports = {
       populate: ['user', 'postLikeEmoji'],
       addtlTableClass: "forums-topic",
       handlers: {
-        msg: function(record, column, escapedVal, callback) {
+        msg: async function(record, column, escapedVal, callback) {
           const post = record;
           post.postLikeEmoji = post.postLikeEmoji || {}
 
@@ -87,11 +87,25 @@ module.exports = {
 
           let likeRow = "";
           if (post.isFirst === 'Y') {
-            if (true) {
-              //TODO: subscribed
-              editStrArr.push(`<a href="#" title="Subscribe"><i class="fa fa-bell"></i> Subscribe</a>`);
+            let isSubscribed;
+            const listId = "peso_topic_" + queryTopicId;
+
+            if (req.user) {
+              isSubscribed = await web.huhumails.isSubscribed({
+                listId: listId,
+                email: req.user.email
+              });
             } else {
-              editStrArr.push(`<a href="#" title="Unsubscribe"><i class="fa fa-bell-slash-o"></i> Unsubscribe</a>`);
+              isSubscribed = false;
+            }
+            
+
+            if (isSubscribed) {
+              const sUrl = '/forums/action/subscribe-wredirect?unsubscribe=Y&listId=' + encodeURIComponent(listId) + '&r=' + encodeURIComponent(req.url);
+              editStrArr.push(`<a href="${sUrl}" title="Unsubscribe"><i class="fa fa-bell-slash-o"></i> Unsubscribe</a>`);
+            } else {
+              const sUrl = '/forums/action/subscribe-wredirect?listId=' + encodeURIComponent(listId) + '&r=' + encodeURIComponent(req.url);
+              editStrArr.push(`<a href="${sUrl}" title="Subscribe"><i class="fa fa-bell"></i> Subscribe</a>`);
             }
 
             let likeCountStr;
@@ -126,7 +140,7 @@ module.exports = {
           <div class="header-topic">
              <div class="small-8 columns post-left-container">by ${userStr} ${dateModStr}</div>
              <div class="small-4 columns post-opts-container">
-               <div class="edit-post"><a href="#" onclick="showPopup(this); return false;"><i class="fa fa-gear"></i></a></div>
+               <div class="edit-post"><a title="Options" href="#" onclick="showPopup(this); return false;"><i class="fa fa-gear"></i></a></div>
                <div class="mypopup">${editStrArr.join(' ')}</div>
 
              </div>
@@ -135,7 +149,7 @@ module.exports = {
             
           `;
 
-          callback(null, contentStr);
+          return contentStr;
         },
       },
     });

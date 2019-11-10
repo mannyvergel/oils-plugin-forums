@@ -1,6 +1,6 @@
 'use strict';
 
-
+// TODO: obsolete? Use subscribe w param
 module.exports = {
   get: [web.auth.loginUtils.handleLogin, async function(req, res) {
 

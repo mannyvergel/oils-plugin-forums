@@ -9,5 +9,7 @@ module.exports = {
   mainTemplate: 'templates/main.html',
   controllersDir: path.join(pluginConf.pluginPath,  'controllers'),
   modelsDir: path.join(pluginConf.pluginPath,  'models'),
-  viewsDir: path.join(pluginConf.pluginPath, 'views') 
+  viewsDir: path.join(pluginConf.pluginPath, 'views'),
+  forumsIndexPageLimit: 1,
+  forumsIndexRowsPerPage: 20,
 }
