@@ -25,40 +25,38 @@
       }
 
       function onClickSubscribe() {
-        var oSubsBtn = $('#SUBS_LINK_BTN');
-        var btnTitle = oSubsBtn.attr('title');
-        if (btnTitle == 'Subscribe') {
 
-          changeSubscribeBtn(true);
-          $.getJSON( "/forums/action/subscribe?listId={{_addSubscribeListId}}", function( returnObj ) {
-            // TODO: transfer delay button here
-          });
-        } else if (btnTitle == 'Unsubscribe') {
-          changeSubscribeBtn(false);
-          
-          $.getJSON( "/forums/action/unsubscribe?listId={{_addSubscribeListId}}", function( returnObj ) {
-            // TODO: transfer delay button here
-          });
-        } else {
-          alert("Not supported title" + oSubsBtn.title);
-        }
+        {%if _user%}
+          var oSubsBtn = $('#SUBS_LINK_BTN');
+          var btnTitle = oSubsBtn.attr('title');
+          if (btnTitle == 'Subscribe') {
+
+            changeSubscribeBtn(true);
+            $.getJSON( "/forums/action/subscribe?listId={{_addSubscribeListId}}", function( returnObj ) {
+              // TODO: transfer delay button here
+            });
+          } else if (btnTitle == 'Unsubscribe') {
+            changeSubscribeBtn(false);
+            
+            $.getJSON( "/forums/action/unsubscribe?listId={{_addSubscribeListId}}", function( returnObj ) {
+              // TODO: transfer delay button here
+            });
+          } else {
+            alert("Not supported title" + oSubsBtn.title);
+          }
+
+        {%else%}
+
+          window.location.href = '/forums/action/subscribe-wredirect?listId={{_addSubscribeListId}}&r=' + encodeURIComponent(window.location.pathname);
+
+        {%endif%}
       }
 
       handleSubscribeBtn();
     </script>
 
-    {#
-    {% if not _subscribed %}
-    <a title="Subscribe" class="frms-subscribe"><i class="fa fa-bell"></i></a>
-    {% else %}
-    <a title="Unsubscribe" class="frms-subscribe"><i class="fa fa-bell-slash-o"></i></a>
-    {% endif %}
-    #}
 
 
-    {#
-    <div class="frms-sep"></div>
-    #}
     {% endif %}
     <a title="Share on Facebook" class="a2a_button_facebook"></a>
     <a title="Share on Twitter" class="a2a_button_twitter"></a>

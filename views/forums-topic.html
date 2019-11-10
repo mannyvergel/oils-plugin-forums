@@ -89,29 +89,35 @@
   }
 
   function forumsPostLike(postId) {
-    var postLikesObj = $("#POST_LIKES_" + postId);
-    var likedData = postLikesObj.data('liked');
-    $.getJSON( "/forums/action/post-like?postId=" + encodeURIComponent(postId) 
-      + '&unlike=' + likedData, function( respJson ) {
-      if (respJson) {
-        if (likedData === 'Y') {
-          postLikesObj.data('liked', 'N');
-        } else {
-          postLikesObj.data('liked', 'Y');
-        }
+    {%if not _user%}
+      window.location.href = '/forums/action/post-like?postId=' + encodeURIComponent(postId);
 
-        if (respJson.data.likeCount == 0) {
-          postLikesObj.removeClass('likes-active');
-          $('#LIKE_COUNTER_' + postId).addClass('be-the-first').text('{{beTheFirstStr}}');
-        } else {
-          postLikesObj.addClass('likes-active');
-          $('#LIKE_COUNTER_' + postId).removeClass('be-the-first').text(respJson.data.likeCount.toString())  
-        }
-        
-      }
-      //alert(JSON.stringify(data));
+    {%else%}
+      var postLikesObj = $("#POST_LIKES_" + postId);
+      var likedData = postLikesObj.data('liked');
+      $.getJSON( "/forums/action/post-like?postId=" + encodeURIComponent(postId) 
+        + '&unlike=' + likedData, function( respJson ) {
+        if (respJson) {
+          if (likedData === 'Y') {
+            postLikesObj.data('liked', 'N');
+          } else {
+            postLikesObj.data('liked', 'Y');
+          }
 
-    });
+          if (respJson.data.likeCount == 0) {
+            postLikesObj.removeClass('likes-active');
+            $('#LIKE_COUNTER_' + postId).addClass('be-the-first').text('{{beTheFirstStr}}');
+          } else {
+            postLikesObj.addClass('likes-active');
+            $('#LIKE_COUNTER_' + postId).removeClass('be-the-first').text(respJson.data.likeCount.toString())  
+          }
+          
+        }
+        //alert(JSON.stringify(data));
+
+      });
+
+    {%endif%}
   }
 
   function hideOnClickOutside(element) {

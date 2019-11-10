@@ -52,7 +52,7 @@ module.exports = {
             activityStr = dateUtils.formatDateSince(record.lastPost.createDt);
           }
 
-          callback(null, '<a title="Go to last page" href="/forums/topic/' + record._id + '/' + record.titleSlug + '?forumspost_p=last#lastPost">' + activityStr + '</a>');
+          callback(null, '<a title="Go to last post" href="/forums/topic/' + record._id + '/' + record.titleSlug + '?forumspost_p=last#lastPost">' + activityStr + '</a>');
         }
       }
 		});

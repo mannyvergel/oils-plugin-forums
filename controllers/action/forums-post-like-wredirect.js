@@ -30,13 +30,11 @@ module.exports = {
 
     console.log("Liked post", !unlike, postId, req.user._id, req.user.nickname, " ::: data", data);
 
-    res.json({
-      status: 200,
-      data: {
-        modified: data.obj.modified,
-        likeCount: data.obj.likeCount
-      }
-    })
+    if (!unlike) {
+      req.flash("info", "Thank you for liking!");
+    }
+
+    res.redirect('/forums/topic/' + postObj.topic);
 
   }]
 }

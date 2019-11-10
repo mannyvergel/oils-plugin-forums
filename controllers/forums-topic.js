@@ -104,7 +104,7 @@ module.exports = {
             }
 
             let dataLiked = "N";
-            if (post.postLikeEmoji.likeUserMap && post.postLikeEmoji.likeUserMap[req.user._id]) {
+            if (post.postLikeEmoji.likeUserMap && req.user && post.postLikeEmoji.likeUserMap[req.user._id]) {
               dataLiked = "Y";
             }
 

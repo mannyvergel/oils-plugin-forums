@@ -106,6 +106,8 @@ async function getTable({req, query, sort}) {
   let table = await web.renderTable(req, Topic, {
       query: query,
       sort: sort,
+      pageLimit: 1,
+      rowsPerPage: 20,
       noRecordsFoundLabel: 'No posts yet.',
       tableTemplate: path.join(pluginConf.pluginPath, '/conf/templates/forums-table-template.html'),
       columns: ['title', 'replyCount', 'viewCount', 'activity'],
@@ -129,7 +131,7 @@ async function getTable({req, query, sort}) {
             activityStr = dateUtils.formatDateSince(record.lastPost.createDt);
           }
 
-          callback(null, '<a title="Go to last page" href="/forums/topic/' + record._id + '/' + record.titleSlug + '?forumspost_p=last#lastPost">' + activityStr + '</a>');
+          callback(null, '<a title="Go to last post" href="/forums/topic/' + record._id + '/' + record.titleSlug + '?forumspost_p=last#lastPost">' + activityStr + '</a>');
         }
       }
     });
