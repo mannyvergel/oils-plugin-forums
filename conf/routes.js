@@ -45,10 +45,8 @@ module.exports = {
   '/forums/action/flag': web.include(path.join(controllersDir, 'action', 'forums-flag.js')),
   '/forums/action/is-subscribed': web.include(path.join(controllersDir, 'action', 'forums-is-subscribed.js')),
   '/forums/action/subscribe': web.include(path.join(controllersDir, 'action', 'forums-subscribe.js')),
-  '/forums/action/subscribe-wredirect': web.include(path.join(controllersDir, 'action', 'forums-subscribe-wredirect.js')),
   '/forums/action/unsubscribe': web.include(path.join(controllersDir, 'action', 'forums-unsubscribe.js')),
   '/forums/action/post-like': web.include(path.join(controllersDir, 'action', 'forums-post-like.js')),
-  '/forums/action/post-like-wredirect': web.include(path.join(controllersDir, 'action', 'forums-post-like-wredirect.js')),
 
 }
 

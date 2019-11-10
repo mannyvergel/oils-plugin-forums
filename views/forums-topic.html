@@ -90,7 +90,7 @@
 
   function forumsPostLike(postId) {
     {%if not _user%}
-      window.location.href = '/forums/action/post-like?postId=' + encodeURIComponent(postId);
+      window.location.href = '/forums/action/post-like?r=Y&postId=' + encodeURIComponent(postId);
 
     {%else%}
       var postLikesObj = $("#POST_LIKES_" + postId);
@@ -98,7 +98,8 @@
       $.getJSON( "/forums/action/post-like?postId=" + encodeURIComponent(postId) 
         + '&unlike=' + likedData, function( respJson ) {
         if (respJson) {
-          if (likedData === 'Y') {
+          var shouldUnlike = likedData === 'Y';
+          if (shouldUnlike) {
             postLikesObj.data('liked', 'N');
           } else {
             postLikesObj.data('liked', 'Y');
@@ -106,11 +107,20 @@
 
           if (respJson.data.likeCount == 0) {
             postLikesObj.removeClass('likes-active');
-            $('#LIKE_COUNTER_' + postId).addClass('be-the-first').text('{{beTheFirstStr}}');
+            $('#LIKE_COUNTER_' + postId + ' .num').text('');
+            $('#LIKE_COUNTER_' + postId + ' .be-the-first').text('{{beTheFirstStr}}');
           } else {
             postLikesObj.addClass('likes-active');
-            $('#LIKE_COUNTER_' + postId).removeClass('be-the-first').text(respJson.data.likeCount.toString())  
+            
+            $('#LIKE_COUNTER_' + postId + ' .num').text(respJson.data.likeCount.toString());
+            if (!shouldUnlike) {
+              $('#LIKE_COUNTER_' + postId + ' .be-the-first').text('(You liked this)'); 
+            } else {
+              $('#LIKE_COUNTER_' + postId + ' .be-the-first').text('');
+            }
           }
+
+          
           
         }
         //alert(JSON.stringify(data));

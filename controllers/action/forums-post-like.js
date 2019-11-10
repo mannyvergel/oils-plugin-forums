@@ -9,7 +9,7 @@ module.exports = {
     const postId = params.postId;
     const emoji = params.emoji;
     const unlike = params.unlike === 'Y';
-
+    const isRedirect = params.r;
 
     if (!postId) {
       throw new Error("Invalid request [p1]");
@@ -30,13 +30,22 @@ module.exports = {
 
     console.log("Liked post", !unlike, postId, req.user._id, req.user.nickname, " ::: data", data);
 
-    res.json({
-      status: 200,
-      data: {
-        modified: data.obj.modified,
-        likeCount: data.obj.likeCount
+    if (isRedirect) {
+      if (!unlike) {
+        req.flash("info", "Thank you for liking!");
       }
-    })
+
+      res.redirect('/forums/topic/' + postObj.topic);
+    } else {
+      res.json({
+        status: 200,
+        data: {
+          modified: data.obj.modified,
+          likeCount: data.obj.likeCount
+        }
+      })  
+    }
+    
 
   }]
 }

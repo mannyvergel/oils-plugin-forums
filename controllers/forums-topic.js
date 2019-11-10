@@ -101,26 +101,32 @@ module.exports = {
             
 
             if (isSubscribed) {
-              const sUrl = '/forums/action/subscribe-wredirect?unsubscribe=Y&listId=' + encodeURIComponent(listId) + '&r=' + encodeURIComponent(req.url);
+              const sUrl = '/forums/action/subscribe?unsubscribe=Y&listId=' + encodeURIComponent(listId) + '&r=' + encodeURIComponent(req.url);
               editStrArr.push(`<a href="${sUrl}" title="Unsubscribe"><i class="fa fa-bell-slash-o"></i> Unsubscribe</a>`);
             } else {
-              const sUrl = '/forums/action/subscribe-wredirect?listId=' + encodeURIComponent(listId) + '&r=' + encodeURIComponent(req.url);
+              const sUrl = '/forums/action/subscribe?listId=' + encodeURIComponent(listId) + '&r=' + encodeURIComponent(req.url);
               editStrArr.push(`<a href="${sUrl}" title="Subscribe"><i class="fa fa-bell"></i> Subscribe</a>`);
             }
 
-            let likeCountStr;
-            let addtlFrmsLikeClass = "";
-            if (post.postLikeEmoji.likeCount > 0) {
-              likeCountStr = `<span id="LIKE_COUNTER_${postIdStr}" class="counter">${post.postLikeEmoji.likeCount}</span>`;
-              addtlFrmsLikeClass = " likes-active";
-            } else {
-              likeCountStr = `<span id="LIKE_COUNTER_${postIdStr}" class="counter be-the-first">${beTheFirstStr}</span>`;
-            }
 
             let dataLiked = "N";
             if (post.postLikeEmoji.likeUserMap && req.user && post.postLikeEmoji.likeUserMap[req.user._id]) {
               dataLiked = "Y";
             }
+
+            let likeCountStr;
+            let addtlFrmsLikeClass = "";
+            if (post.postLikeEmoji.likeCount > 0) {
+              let textLikeStr = "";
+              if (dataLiked == "Y") {
+                textLikeStr = '(You liked this)';
+              }
+              likeCountStr = `<span id="LIKE_COUNTER_${postIdStr}" class="counter"><span class="num">${post.postLikeEmoji.likeCount}</span> <span class="be-the-first">${textLikeStr}</span></span>`;
+              addtlFrmsLikeClass = " likes-active";
+            } else {
+              likeCountStr = `<span id="LIKE_COUNTER_${postIdStr}" class="counter"><span class="num"></span> <span class="be-the-first">${beTheFirstStr}</span></span>`;
+            }
+
 
             likeRow = `<div id="POST_LIKES_${postIdStr}" class="frms-likes-ct${addtlFrmsLikeClass}" data-liked="${dataLiked}">
                         <a href="#" onclick="forumsPostLike('${postIdStr}'); return false;"><i class="fa fa-thumbs-o-up"></i> ${likeCountStr}</a> 
