@@ -29,8 +29,9 @@ module.exports = {
     
 		let table = await web.renderTable(req, Topic, {
 		  query: {category: queryCatId},
-		  sort: {'lastPost.createDt': -1},
+		  sort: {'lastPostDt': -1},
       noRecordsFoundLabel: 'No posts yet.',
+      populate: ['lastPost'],
       tableTemplate: path.join(pluginConf.pluginPath, '/conf/templates/forums-table-template.html'),
 		  columns: ['title', 'replyCount', 'viewCount', 'activity'],
 		  labels: ['', 'Replies', 'Views', 'Activity'],

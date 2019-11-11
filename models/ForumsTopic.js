@@ -9,13 +9,16 @@ const stringUtils = require('../lib/stringUtils.js');
 module.exports = {
   schema: {
     title: {type: String, required: true, trim: true},
+    user: {type: ObjectId, required: true, ref: 'User'},
     titleSlug: {type: String, required: true},
     category: {type: ObjectId, ref: 'ForumsCategory', required: true},
     tags: [{type: String}],
     replyCount: {type: Number, default: 0},
     viewCount: {type: Number, default: 0},
     activeUsers: [{_id: {type: ObjectId}, username: {type: String}, nickname: {type: String}, avatar: {type: String}}],
-    lastPost: {_id:{type:ObjectId}, createBy:String, createDt: Date},
+    lastPost: {type: Object, ref: 'ForumsPost'},
+    lastPostDt: {type: Date},
+    firstPost: {type: Object, ref: 'ForumsPost'},
     status: {type: String, default: 'A', required: true, index: true}, //[A]ctive, [C]losed, X - Deleted
 
     updateDt: {type: Date, default: Date.now},
@@ -32,7 +35,7 @@ module.exports = {
 
 
       schema.index({createDt: -1});
-      schema.index({'lastPost.createDt': -1});
+      schema.index({'lastPostDt': -1});
 
       schema.statics.updateReplyCount = async function(topicId) {
         const Post = web.models('ForumsPost');
@@ -40,6 +43,11 @@ module.exports = {
         await this.updateOne({_id: topicId}, { $set: { replyCount: replyCount }});
         return replyCount;
       }
+
+      schema.virtual('link').get(function() {
+        const self = this;
+        return '/forums/topic/' + self._id + '/' + encodeURIComponent(self.titleSlug);
+      });
 
       schema.pre('validate', function(next) {
 

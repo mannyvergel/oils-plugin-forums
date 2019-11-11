@@ -55,6 +55,7 @@ module.exports = {
     } else {
       post = new Post();
       topic = new Topic();
+      topic.user = req.user._id;
       topic.createBy = req.user._id;
       post.createBy = req.user._id;
     }

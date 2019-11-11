@@ -42,6 +42,10 @@ module.exports = {
 
     mySchema.index({lastFlagDt: -1});
 
+    mySchema.virtual('summary').get(function() {
+        return trunc(this.msg, 160);
+    })
+
     mySchema.pre('save', async function() {
         //workaround for determining inserts
         this.wasNew = this.isNew;
@@ -89,7 +93,11 @@ module.exports = {
                 return;
             }
 
-            topic.lastPost = self;
+            topic.lastPost = self._id;
+            topic.lastPostDt = self.createDt;
+            if (this.isFirst) {
+                topic.firstPost = self._id;
+            }
             await topic.save();
         }
 
@@ -103,7 +111,8 @@ module.exports = {
             if (post) {
                 Topic.findOne({_id: post.topic}, function(err, topic) {
                     if (topic) {
-                        topic.lastPost = post;
+                        topic.lastPost = post._id;
+                        topic.lastPostDt = post.createDt;
                         topic.save();
                     }
                 });
@@ -112,4 +121,12 @@ module.exports = {
         })
     });
   }
+}
+
+function trunc(str, n) {
+  if (!str) {
+    return "";
+  }
+
+  return (str.length > n) ? str.substr(0, n-1) + '...' : str;
 }
