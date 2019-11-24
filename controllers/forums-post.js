@@ -6,6 +6,7 @@ const Post = web.models('ForumsPost');
 const path = require('path');
 const Topic = web.models('ForumsTopic');
 const Category = web.models('ForumsCategory');
+const forumsStringUtils = require('../lib/stringUtils.js');
 
 module.exports = {
   get: [web.auth.loginUtils.handleLogin, async function(req, res) {
@@ -111,6 +112,13 @@ module.exports = {
       topic.updateBy = req.user._id;
       topic.updateDt = new Date();
 
+      let hasUrl = false;
+      if (forumsStringUtils.hasUrl(post.msg)) {
+        topic.status = 'P';
+        post.status = 'P';
+        hasUrl = true;
+      }
+
       await topic.save();
 
 
@@ -125,10 +133,10 @@ module.exports = {
       // web.subs.subscribe('topic_' + post.topic, req.user._id);
 
       try {
-        const listId = 'peso_topic_' + post.topic;
+        const listId = pluginConf.defaultForumsId + '_topic_' + post.topic;
         await web.huhumails.ensureMailingList({
           listId,
-          listDesc: 'Pesobility Topic ' + topic.title
+          listDesc: pluginConf.defaultForumsName + ' Topic ' + topic.title
         });
 
         await web.huhumails.subscribe({
@@ -139,8 +147,19 @@ module.exports = {
         console.error("Error in mailing list", ex);
       }
 
-      req.flash('info', 'Topic posted');
-      res.redirect('/forums/topic/' + topic._id + '/' + topic.titleSlug);
+      if (hasUrl) {
+        req.flash('error', 'Your topic may contain links and has been submitted for review.');
+        if (category) {
+          res.redirect('/forums/category/' + category);
+        } else {
+          res.redirect('/forums');
+        }
+        
+      } else {
+        req.flash('info', 'Topic posted');
+        res.redirect('/forums/topic/' + topic._id + '/' + topic.titleSlug);
+      }
+      
 
 
     } catch (ex) {

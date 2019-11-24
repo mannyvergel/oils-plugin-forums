@@ -61,8 +61,8 @@ module.exports = async function(pluginConf, web, done) {
       { text: 'Forum', link:'/admin/forums'},
       { text: 'Categories', link:'/admin/forums/categories'},
       { text: 'All Posts', link:'/admin/dbedit/list?model=ForumsPost&sort=%7B%22createDt%22%3A-1%7D&displayName=All%20Posts'},
-      { text: 'Pending Posts', link:'/admin/dbedit/list?model=ForumsPost&filter=%7B%22status%22%3A%22P%22%7D&displayName=Pending%20Posts'},
-      { text: 'Flagged Posts', link:'/admin/dbedit/list?model=ForumsPost&filter=%7B%22lastFlagDt%22%3A%7B%22%24ne%22%3Anull%7D%7D&displayName=Flagged+Posts&sort=%7B%22lastFlagDt%22%3A+-1%7D'},
+      { text: 'Pending Posts', link:'/admin/dbedit/list?model=ForumsPost&filter=%7B%22status%22%3A%22P%22%7D&displayName=Pending%20Posts&saveParams=filterCols%3Dstatus%2Cmsg%2Cuser%26readOnly%3Dmsg%2Cuser&showAddButton=N'},
+      { text: 'Flagged Posts', link:'/admin/dbedit/list?model=ForumsPost&filter=%7B%22lastFlagDt%22%3A%7B%22%24ne%22%3Anull%7D%7D&displayName=Flagged+Posts&sort=%7B%22lastFlagDt%22%3A+-1%7D&saveParams=filterCols%3Dstatus%2Cmsg%2Cuser%26readOnly%3Dmsg%2Cuser&showAddButton=N'},
     ]
   })
 

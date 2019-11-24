@@ -13,7 +13,7 @@ module.exports = {
     isFirst: {type: String}, // Y to indicate that it's the first (most likely from the author)
 
     //not indexed as of writing since it's not needed to be retrieved separately
-    status: {type: String, required: true, default: 'A'}, //[A]ctive, [X]Deleted
+    status: {type: String, required: true, default: 'A'}, //[A]ctive, [X]Deleted, [P]Pending for Approval
     //TODO: array diff column
 
     //diff
@@ -45,6 +45,11 @@ module.exports = {
     mySchema.virtual('summary').get(function() {
         return trunc(this.msg, 160);
     })
+
+    mySchema.path('status').set(function (newVal) {
+        this._prevStatus = this.status;
+        return newVal;
+    });
 
     mySchema.pre('save', async function() {
         //workaround for determining inserts
@@ -83,7 +88,7 @@ module.exports = {
         console.debug("[ForumsPost-postSave] isInsert:", isInsert);
 
         if (isInsert) {
-            let Topic = web.models('ForumsTopic');
+            const Topic = web.models('ForumsTopic');
             const self = this;
 
             const topic = await Topic.findOne({_id: this.topic});
@@ -99,6 +104,52 @@ module.exports = {
                 topic.firstPost = self._id;
             }
             await topic.save();
+        } else {
+            // is update mode
+
+            // TO DO: for flagged post from Approved to Deleted, also delete the topic if first post
+            
+            // handle approving first post along with the topic
+            if (this._prevStatus === 'P' && this.status === 'A' && this.isFirst === 'Y') {
+                const Topic = web.models('ForumsTopic');
+                const topic = await Topic.findOne({_id: this.topic}).populate('user');
+                if (!topic) {
+                    console.error("[ForumsPost-postSave] Topic not found.");
+                    return;
+                }
+
+                if (topic.status === 'P') {
+                    console.log("Also approving the parent topic of the first post");
+                    topic.status = 'A';
+                    topic.updateDt = new Date();
+                    await topic.save();
+                    const pluginConf = web.plugins['oils-plugin-forums'].conf;
+                    const listId = pluginConf.defaultForumsId + '_topic_' + topic._id.toString();
+                    const forumTitle = pluginConf.defaultForumsName;
+
+                    try {
+                        await web.huhumails.emailToList({
+                            listId: listId,
+
+                            subj: `New Post Approved for ${topic.title} - ${forumTitle}`,
+                            body: 
+`Hi,
+
+A new reply has been posted and approved for the topic <a href="${pluginConf.hostUrl}/forums/topic/${topic._id}/${topic.titleSlug}?forumspost_p=last#lastPost">${topic.title}.
+
+${forumTitle}
+`,
+                            conf: {
+                                replaceNewLineWithBr: true
+                            },
+                        });
+
+                    } catch (ex) {
+                        console.error("Huhumails approval email error", ex);
+                    }
+                }
+                
+            }
         }
 
     });

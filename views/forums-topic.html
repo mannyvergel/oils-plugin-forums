@@ -22,7 +22,7 @@
 
 
 {% set _addSubscribe = true %}
-{% set _addSubscribeListId = 'peso_topic_' + topic._id%}
+{% set _addSubscribeListId = pluginConf.defaultForumsId + '_topic_' + topic._id%}
 {% include "./inc/share-btns-row.html" %}
 
 

@@ -28,7 +28,7 @@ module.exports = {
     }
     
 		let table = await web.renderTable(req, Topic, {
-		  query: {category: queryCatId},
+		  query: {category: queryCatId, status: 'A'},
 		  sort: {'lastPostDt': -1},
       noRecordsFoundLabel: 'No posts yet.',
       populate: ['lastPost'],

@@ -19,7 +19,7 @@ module.exports = {
     lastPost: {type: Object, ref: 'ForumsPost'},
     lastPostDt: {type: Date},
     firstPost: {type: Object, ref: 'ForumsPost'},
-    status: {type: String, default: 'A', required: true, index: true}, //[A]ctive, [C]losed, X - Deleted
+    status: {type: String, default: 'A', required: true, index: true}, //[A]ctive, [C]losed, X - Deleted, [P]ending for approval
 
     updateDt: {type: Date, default: Date.now},
     updateBy: {type: String, default: 'SYSTEM'},

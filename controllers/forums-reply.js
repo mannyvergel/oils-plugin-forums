@@ -84,10 +84,6 @@ module.exports = {
 
     afterPosting(post, topic, req);
 
-    const subsTopicId = "topic_" + topicIdStr;
-
-    // web.subs.subscribe(subsTopicId, req.user._id);
-
     req.flash('info', 'Reply posted');
     res.redirect('/forums/topic/' + topicIdStr + '/' + topic.titleSlug + '?forumspost_p=last#lastPost');
 
@@ -97,8 +93,9 @@ module.exports = {
 
 async function afterPosting(post, topic, req) {
   const pluginConf = web.plugins['oils-plugin-forums'].conf;
-  const forumTitle = req.defaultForum.name || "Forums";
-  const listId = 'peso_topic_' + post.topic;
+  // const forumTitle = req.defaultForum.name || "Forums";
+  const forumTitle = pluginConf.defaultForumsName;
+  const listId = pluginConf.defaultForumsId + '_topic_' + post.topic;
 
   try {
     await web.huhumails.subscribe({
@@ -110,15 +107,15 @@ async function afterPosting(post, topic, req) {
       listId: listId,
       exclude: [req.user.email],
       
-      subj: `New Reply for ${topic.title} - ${forumTitle}`,
+      subj: `New Post for ${topic.title} - ${forumTitle}`,
       body: `Hi,
 
   A new reply has been posted for the topic <a href="${pluginConf.hostUrl}/forums/topic/${topic._id}/${topic.titleSlug}?forumspost_p=last#lastPost">${topic.title}.
 
-  Pesobility Forums
+  ${forumTitle}
   `,
       conf: {
-        replaceNewLineWithBr: pluginConf.emailReplaceNewLineWithBr
+        replaceNewLineWithBr: true
       },
     })
 

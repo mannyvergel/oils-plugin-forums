@@ -7,6 +7,8 @@ module.exports = {
   hostUrl: 'http://localhost:8080',
   emailReplaceNewLineWithBr: true,
   mainTemplate: 'templates/main.html',
+  defaultForumsName: 'Forums',
+  defaultForumsId: 'forum',
   controllersDir: path.join(pluginConf.pluginPath,  'controllers'),
   modelsDir: path.join(pluginConf.pluginPath,  'models'),
   viewsDir: path.join(pluginConf.pluginPath, 'views'),

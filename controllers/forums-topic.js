@@ -88,13 +88,17 @@ module.exports = {
           let likeRow = "";
           if (post.isFirst === 'Y') {
             let isSubscribed;
-            const listId = "peso_topic_" + queryTopicId;
+            const listId = pluginConf.defaultForumsId + "_topic_" + queryTopicId;
 
             if (req.user) {
-              isSubscribed = await web.huhumails.isSubscribed({
-                listId: listId,
-                email: req.user.email
-              });
+              try {
+                isSubscribed = await web.huhumails.isSubscribed({
+                  listId: listId,
+                  email: req.user.email
+                });
+              } catch (ex) {
+                console.error("Error in huhumail subs", ex);
+              }
             } else {
               isSubscribed = false;
             }
