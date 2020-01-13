@@ -39,7 +39,11 @@ module.exports = {
 
       schema.statics.updateReplyCount = async function(topicId) {
         const Post = web.models('ForumsPost');
-        const replyCount = await Post.count({topic: topicId});
+        let replyCount = await Post.count({topic: topicId});
+        if (replyCount > 0) {
+          // do not add original post
+          replyCount -= 1;
+        }
         await this.updateOne({_id: topicId}, { $set: { replyCount: replyCount }});
         return replyCount;
       }
