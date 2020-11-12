@@ -7,6 +7,7 @@ const path = require('path');
 const Topic = web.models('ForumsTopic');
 const Category = web.models('ForumsCategory');
 const userUtils = require('../lib/userUtils.js');
+const forumsStringUtils = require('../lib/stringUtils.js');
 
 module.exports = {
   get: [web.auth.loginUtils.handleLogin, async function(req, res) {
@@ -77,31 +78,40 @@ module.exports = {
     post.updateBy = req.user._id;
     post.updateDt = new Date();
 
+    let isPending = false;
+    
+    if (forumsStringUtils.hasUrl(post.msg)) {
+      post.status = 'P';
+      isPending = true;
+    }
+
     await post.save();
 
-    Topic.addActiveUser(topic._id, req.user);
-    Topic.updateReplyCount(topic._id);
 
-    afterPosting(post, topic, req);
+    if (isPending) {
+      req.flash('info', 'Your reply is under review as it may contain things that are against our community guidelines.');
+      res.redirect('/forums/topic/' + topicIdStr + '/' + topic.titleSlug + '?forumspost_p=last');
+    } else {
+      req.flash('info', 'Reply posted');
+      emailToList(post, topic, req);
+      res.redirect('/forums/topic/' + topicIdStr + '/' + topic.titleSlug + '?forumspost_p=last#lastPost');
+    }
 
-    req.flash('info', 'Reply posted');
-    res.redirect('/forums/topic/' + topicIdStr + '/' + topic.titleSlug + '?forumspost_p=last#lastPost');
+    
+
+    subscribe(post, topic, req);
 
   }]
 }
 
 
-async function afterPosting(post, topic, req) {
+async function emailToList(post, topic, req) {
   const pluginConf = web.plugins['oils-plugin-forums'].conf;
   // const forumTitle = req.defaultForum.name || "Forums";
   const forumTitle = pluginConf.defaultForumsName;
   const listId = pluginConf.defaultForumsId + '_topic_' + post.topic;
 
   try {
-    await web.huhumails.subscribe({
-      listIds: [listId],
-      emails: [req.user.email],
-    })
 
     await web.huhumails.emailToList({
       listId: listId,
@@ -124,3 +134,20 @@ async function afterPosting(post, topic, req) {
   }
 
 }
+
+async function subscribe(post, topic, req) {
+  const pluginConf = web.plugins['oils-plugin-forums'].conf;
+  const listId = pluginConf.defaultForumsId + '_topic_' + post.topic;
+
+  try {
+    await web.huhumails.subscribe({
+      listIds: [listId],
+      emails: [req.user.email],
+    })
+
+  } catch (ex) {
+    console.error("Error after reply subs", ex);
+  }
+
+}
+

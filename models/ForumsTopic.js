@@ -4,8 +4,6 @@ const mongoose = web.require('mongoose');
 const Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 
-const stringUtils = require('../lib/stringUtils.js');
-
 module.exports = {
   schema: {
     title: {type: String, required: true, trim: true},
@@ -29,6 +27,7 @@ module.exports = {
   initSchema: function(schema) {
 
       let commonFuncs = require('../lib/commonFuncs.js');
+      const stringUtils = require('../lib/stringUtils.js');
 
       schema.statics.incrementViewCount = commonFuncs.incrementViewCount;
       schema.statics.addActiveUser = commonFuncs.addActiveUser;
@@ -39,12 +38,12 @@ module.exports = {
 
       schema.statics.updateReplyCount = async function(topicId) {
         const Post = web.models('ForumsPost');
-        let replyCount = await Post.count({topic: topicId});
+        let replyCount = await Post.countDocuments({topic: topicId, status: 'A'});
         if (replyCount > 0) {
           // do not add original post
           replyCount -= 1;
         }
-        await this.updateOne({_id: topicId}, { $set: { replyCount: replyCount }});
+        await this.updateOne({_id: topicId}, { $set: { replyCount: replyCount }}).exec();
         return replyCount;
       }
 

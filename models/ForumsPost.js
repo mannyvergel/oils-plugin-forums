@@ -36,6 +36,9 @@ module.exports = {
   },
 
   initSchema: function(mySchema) {
+    // this declaration only works because loadModels in plugin-forums was reversed
+    const Topic = web.models('ForumsTopic');
+
     mySchema.index({topic: 1, status: 1});
 
     mySchema.index({createDt: -1});
@@ -84,14 +87,13 @@ module.exports = {
     })
 
     mySchema.post('save', async function() {
-        const isInsert = this.wasNew;
+        const self = this;
+        const isInsert = self.wasNew;
         console.debug("[ForumsPost-postSave] isInsert:", isInsert);
 
         if (isInsert) {
-            const Topic = web.models('ForumsTopic');
-            const self = this;
 
-            const topic = await Topic.findOne({_id: this.topic});
+            const topic = await Topic.findOne({_id: self.topic._id});
 
             if (!topic) {
                 console.error("[ForumsPost-postSave] Topic not found.");
@@ -100,7 +102,7 @@ module.exports = {
 
             topic.lastPost = self._id;
             topic.lastPostDt = self.createDt;
-            if (this.isFirst) {
+            if (self.isFirst) {
                 topic.firstPost = self._id;
             }
             await topic.save();
@@ -110,9 +112,8 @@ module.exports = {
             // TO DO: for flagged post from Approved to Deleted, also delete the topic if first post
             
             // handle approving first post along with the topic
-            if (this._prevStatus === 'P' && this.status === 'A' && this.isFirst === 'Y') {
-                const Topic = web.models('ForumsTopic');
-                const topic = await Topic.findOne({_id: this.topic}).populate('user');
+            if (self._prevStatus === 'P' && self.status === 'A' && self.isFirst === 'Y') {
+                const topic = await Topic.findOne({_id: self.topic._id}).populate('user');
                 if (!topic) {
                     console.error("[ForumsPost-postSave] Topic not found.");
                     return;
@@ -122,33 +123,47 @@ module.exports = {
                     console.log("Also approving the parent topic of the first post");
                     topic.status = 'A';
                     topic.updateDt = new Date();
+                    topic.lastPostDt = new Date();
                     await topic.save();
-                    const pluginConf = web.plugins['oils-plugin-forums'].conf;
-                    const listId = pluginConf.defaultForumsId + '_topic_' + topic._id.toString();
-                    const forumTitle = pluginConf.defaultForumsName;
+//                     const pluginConf = web.plugins['oils-plugin-forums'].conf;
+//                     const listId = pluginConf.defaultForumsId + '_topic_' + topic._id.toString();
+//                     const forumTitle = pluginConf.defaultForumsName;
 
-                    try {
-                        await web.huhumails.emailToList({
-                            listId: listId,
+//                     try {
+//                         await web.huhumails.emailToList({
+//                             listId: listId,
 
-                            subj: `New Post Approved for ${topic.title} - ${forumTitle}`,
-                            body: 
-`Hi,
+//                             subj: `New Post Approved for ${topic.title} - ${forumTitle}`,
+//                             body: 
+// `Hi,
 
-A new reply has been posted and approved for the topic <a href="${pluginConf.hostUrl}/forums/topic/${topic._id}/${topic.titleSlug}?forumspost_p=last#lastPost">${topic.title}.
+// A new reply has been posted and approved for the topic <a href="${pluginConf.hostUrl}/forums/topic/${topic._id}/${topic.titleSlug}?forumspost_p=last#lastPost">${topic.title}.
 
-${forumTitle}
-`,
-                            conf: {
-                                replaceNewLineWithBr: true
-                            },
-                        });
+// ${forumTitle}
+// `,
+//                             conf: {
+//                                 replaceNewLineWithBr: true
+//                             },
+//                         });
 
-                    } catch (ex) {
-                        console.error("Huhumails approval email error", ex);
-                    }
+//                     } catch (ex) {
+//                         console.error("Huhumails approval email error", ex);
+//                     }
                 }
                 
+            }
+        }
+
+
+        if ((isInsert && self.status === "A") || (self.status === "A" && self.status !== self._prevStatus)) {
+            
+            if (!self.isFirst) {
+                if (!self.populated(self.user)) {
+                    console.debug('!!! Populating user');
+                    await self.populate('user').execPopulate();
+                }
+                Topic.addActiveUser(self.topic._id, self.user);
+                Topic.updateReplyCount(self.topic._id);
             }
         }
 

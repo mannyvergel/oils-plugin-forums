@@ -8,7 +8,7 @@ function loadModels(pluginConf) {
   let modelsDir = pluginConf.modelsDir;
   let arrFiles = fs.readdirSync(path.join(web.conf.baseDir, modelsDir));
   //console.log('!', arrFiles)
-  for (let i=0; i<arrFiles.length; i++) {
+  for (let i=arrFiles.length-1; i>=0; i--) {
     if (web.stringUtils.endsWith(arrFiles[i], '.js')) {
       //console.log('!!!!', arrFiles[i])
       web.includeModel(path.join(modelsDir, arrFiles[i]));
