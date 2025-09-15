@@ -68,7 +68,7 @@ module.exports = {
     }
 
     post.topic = topic._id;
-    post.msg = req.body.msg && req.body.msg.trim();
+    post.msg = forumsStringUtils.sanitize(req.body.msg && req.body.msg.trim());
     post.user = req.user._id;
 
     if (web.stringUtils.isEmpty(post.msg)) {

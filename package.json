@@ -1,6 +1,6 @@
 {
   "name": "oils-plugin-forums",
-  "version": "7.5.2",
+  "version": "12.0.0",
   "description": "Forum plugin for Oils JS",
   "main": "index.js",
   "scripts": {
@@ -27,10 +27,7 @@
   },
   "homepage": "https://github.com/mannyvergel/oils-plugin-forums#readme",
   "dependencies": {
-    "dompurify": "^2.2.2",
-    "jsdom": "^16.4.0"
-  },
-  "peerDependencies": {
-
+    "dompurify": "^3.2.6",
+    "jsdom": "^27.0.0"
   }
 }

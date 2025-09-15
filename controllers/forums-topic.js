@@ -10,8 +10,19 @@ const forumUtils = web.plugins['oils-plugin-forums'].utils
 const forumConstants = web.plugins['oils-plugin-forums'].constants;
 const marked = web.require('marked');
 const commonFuncs = require('../lib/commonFuncs.js');
+const forumsStringUtils = require('../lib/stringUtils.js');
 
 const beTheFirstStr = 'Be the first to like';
+
+marked.setOptions({
+  renderer: new marked.Renderer(),
+  gfm: true,
+  tables: true,
+  breaks: true,
+  pedantic: false,
+  smartLists: true,
+  smartypants: false
+});
 
 module.exports = {
   get: async function(req, res) {
@@ -60,7 +71,7 @@ module.exports = {
 
           userStr = web.stringUtils.escapeHTML(userStr);
 
-          let markedMsg = marked(post.msg);
+          let markedMsg = forumsStringUtils.sanitize(marked.parse(post.msg));
 
           let dateStr = web.dateUtils.formatReadableDateTime(post.updateDt);
           let dateModStr = dateStr;

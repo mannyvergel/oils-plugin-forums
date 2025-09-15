@@ -68,8 +68,7 @@ module.exports = {
     post.isFirst = 'Y';
 
     post.topic = topic._id;
-    post.msg = req.body.msg || "";
-    post.msg = post.msg.trim();
+    post.msg = forumsStringUtils.sanitize((req.body.msg || "").trim());
 
     let category = req.body.category;
 

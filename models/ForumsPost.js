@@ -159,8 +159,8 @@ module.exports = {
             
             if (!self.isFirst) {
                 if (!self.populated(self.user)) {
-                    console.debug('!!! Populating user');
-                    await self.populate('user').execPopulate();
+                    // console.debug('!!! Populating user');
+                    await self.populate('user');
                 }
                 Topic.addActiveUser(self.topic._id, self.user);
                 Topic.updateReplyCount(self.topic._id);
